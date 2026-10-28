@@ -8,9 +8,9 @@ export const getClients = async (req, res) => {
             clients.id,
             clients.name,
             clients.phone,
+            clients.is_active,
             clients.created_at
             FROM clients
-            WHERE is_active
             ORDER BY clients.id
         `);
 
@@ -84,9 +84,9 @@ export const updateClient = async (req, res) => {
     try {
         const result = await pool.query(`
            UPDATE clients
-           SET clients.name = $2,
-               clients.phone = $3
-           WHERE clients.id = $1
+           SET name = $2,
+               phone = $3
+           WHERE id = $1
            RETURNING *
         `, [id, name.trim(), phone.trim()]);
 
@@ -109,7 +109,7 @@ export const toggleClientStatus = async (req, res) => {
     try {
         const result = await pool.query(`
            UPDATE clients
-           SET clients.is_active = NOT clients.is_active
+           SET is_active = NOT is_active
            WHERE clients.id = $1
            RETURNING *
         `, [id]);
