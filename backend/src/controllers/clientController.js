@@ -1,6 +1,6 @@
 import pool from '../config/db.js';
 
-//GET
+//GET CLIENTS
 export const getClients = async (req, res) => {
     try {
         const result = await pool.query(`
@@ -20,7 +20,7 @@ export const getClients = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los clientes' })
     }
 };
-//GET:ID
+//GET CLIENT BY:ID
 export const getClientById = async (req, res) => {
     const id = req.params.id;
 
@@ -103,13 +103,13 @@ export const updateClient = async (req, res) => {
     }
 };
 //UNABLE CLIENT:ID
-export const deactivateClient = async (req, res) => {
+export const toggleClientStatus = async (req, res) => {
     const id = req.params.id;
 
     try {
         const result = await pool.query(`
            UPDATE clients
-           SET clients.is_active = false
+           SET clients.is_active = NOT clients.is_active
            WHERE clients.id = $1
            RETURNING *
         `, [id]);
@@ -123,7 +123,7 @@ export const deactivateClient = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al dar de baja cliente' })
+        res.status(500).json({ error: 'Error al cambiar estado de cliente' })
     }
 }
 
