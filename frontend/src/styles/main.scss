@@ -1,0 +1,229 @@
+@use './variables' as *;
+
+// ========================================
+// 1. ESTILOS GLOBALES
+// ========================================
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: $color-text;
+  background: $color-background;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: $color-background;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+#root {
+  min-height: 100vh;
+}
+button {
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid rgba($color-primary, 0.35);
+    outline-offset: 3px;
+  }
+}
+// ========================================
+// 2. ESTRUCTURA GENERAL
+// ========================================
+
+.app {
+  width: 100%;
+  max-width: 760px;
+  min-height: 100vh;
+  margin-inline: auto;
+  padding: $spacing-xl $spacing-lg $spacing-2xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: $spacing-lg $spacing-sm $spacing-xl;
+    gap: $spacing-lg;
+  }
+}
+
+// ========================================
+// 3. NAVEGACIÓN
+// ========================================
+
+.main-navigation {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.nav-button {
+  min-height: 44px;
+  padding: 0 $spacing-xl;
+  border: 1px solid rgba($color-border, 0.9);
+  border-radius: $radius-pill;
+  background: rgba($color-surface, 0.8);
+  color: $color-text-muted;
+  box-shadow: $shadow-button;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &.is-active {
+    background: $color-primary;
+    border-color: rgba($color-primary, 0.9);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba($color-primary, 0.2);
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    padding-inline: $spacing-lg;
+  }
+}
+
+// ========================================
+// 4. CALENDARIO
+// ========================================
+
+.calendar-panel {
+  flex: 1;
+  min-height: 420px;
+  padding: $spacing-4xl;
+  border: 1px solid $glass-border;
+  border-radius: $radius-4xl;
+  background: $glass-background;
+  box-shadow:
+    $shadow-soft,
+    inset 0 1px 0 $glass-highlight;
+  backdrop-filter: blur($glass-blur);
+  -webkit-backdrop-filter: blur($glass-blur);
+
+  .calendar-header {
+    margin-bottom: $spacing-xl;
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 650;
+      letter-spacing: -0.045em;
+    }
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    min-height: 400px;
+    padding: $spacing-xl $spacing-2xl;
+    border-radius: $radius-2xl;
+  }
+}
+
+.calendar-placeholder {
+  min-height: 300px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed $color-border;
+  border-radius: $radius-lg;
+  color: $color-text-muted;
+  text-align: center;
+
+  p {
+    padding: $spacing-lg;
+  }
+}
+
+// ========================================
+// 5. ACCIONES DEL CALENDARIO
+// ========================================
+
+.calendar-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-appointment {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba($color-primary, 0.8);
+  border-radius: $radius-circle;
+  background: $color-primary;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+  box-shadow: $shadow-button-primary;
+  transition: transform 180ms ease;
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    width: 54px;
+    height: 54px;
+  }
+}
+
+// ========================================
+// 6. CONTROL "HOY"
+// ========================================
+
+.today-handle {
+  align-self: stretch;
+  min-width: 132px;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-xl;
+  border: 1px solid $glass-border;
+  border-radius: $radius-pill;
+  background: $glass-background;
+  color: $color-text;
+  box-shadow:
+    $shadow-soft,
+    inset 0 1px 0 $glass-highlight;
+  backdrop-filter: blur($glass-blur);
+  -webkit-backdrop-filter: blur($glass-blur);
+}
+
+.handle-indicator {
+  width: 30px;
+  height: 4px;
+  border-radius: $radius-pill;
+  background: #c9c9d6;
+}
+
+// ========================================
+// 7. ACCESIBILIDAD
+// ========================================
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

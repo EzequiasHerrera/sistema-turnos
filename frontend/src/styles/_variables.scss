@@ -1,0 +1,45 @@
+$color-primary: #635bdb;
+$color-primary-hover: #5148c7;
+
+$color-background: #d3d3d8;
+$color-surface: #ffffff;
+$color-text: #202235;
+$color-text-muted: #777b8e;
+$color-border: #e8e8f1;
+
+$color-success: #21875a;
+$color-warning: #b7791f;
+$color-danger: #d64545;
+
+$radius-sm: 8px;
+$radius-md: 14px;
+$radius-lg: 22px;
+$radius-xl: 26px;
+$radius-2xl: 32px;
+$radius-4xl: 50px;
+
+$radius-pill: 999px;
+$radius-circle: 50%;
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
+$spacing-2xl: 32px;
+$spacing-3xl: 40px;
+$spacing-4xl: 50px;
+
+$shadow-soft: 0 6px 24px rgba(32, 34, 53, 0.055);
+$shadow-button: 0 3px 10px rgba(32, 34, 53, 0.08);
+$shadow-highlight-inset: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+$shadow-button-primary: 0 6px 16px rgba($color-primary, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+$glass-background: rgba(255, 255, 255, 0.76);
+$glass-border: rgba(255, 255, 255, 0.95);
+$glass-highlight: rgba(255, 255, 255, 0.9);
+$glass-blur: 18px;
+
+$breakpoint-mobile: 600px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
