@@ -1,5 +1,14 @@
-
+import { getCalendarDays } from './utils/calendarUtils'
 function App() {
+  const calendarDays = getCalendarDays(new Date(2026, 9, 1))
+
+  console.log(
+    calendarDays.map(({ date, isCurrentMonth }) => ({
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      isCurrentMonth,
+    })),
+  )
   return (
     <main className="app">
       <nav className="main-navigation" aria-label="Navegación principal">
