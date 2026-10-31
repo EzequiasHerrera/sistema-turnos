@@ -13,32 +13,40 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 * {
   box-sizing: border-box;
 }
+
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
   background: $color-background;
 }
+
 button,
 input,
 select,
 textarea {
   font: inherit;
 }
+
 #root {
   min-height: 100vh;
 }
+
 button {
   cursor: pointer;
+  border: 0px;
+  background-color: transparent;
 
   &:focus-visible {
     outline: 3px solid rgba($color-primary, 0.35);
     outline-offset: 3px;
   }
 }
+
 // ========================================
 // 2. ESTRUCTURA GENERAL
 // ========================================
@@ -103,6 +111,8 @@ button {
 // ========================================
 
 .calendar-panel {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 420px;
   padding: $spacing-4xl;
@@ -116,34 +126,90 @@ button {
   -webkit-backdrop-filter: blur($glass-blur);
 
   .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
     margin-bottom: $spacing-xl;
 
-    h1 {
+    .calendar-month {
       margin: 0;
       font-size: clamp(1.5rem, 5vw, 2rem);
       font-weight: 650;
       letter-spacing: -0.045em;
     }
+
+    .calendar-navigation {
+      .month-nav-button {
+        font-size: clamp(1.5rem, 5vw, 1rem);
+        font-weight: 800;
+        color: $color-primary;
+      }
+    }
+  }
+
+  .calendar-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px dashed $color-border;
+    border-radius: $radius-lg;
+    color: $color-text-muted;
+    text-align: center;
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      color: $color-text-muted;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: $spacing-md;
+    }
+
+    .calendar-days {
+      flex: 1;
+      min-height: 275px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-auto-rows: 1fr;
+      gap: 3px;
+
+      .calendar-day {
+        border: 0;
+        font-weight: 600;
+        width: auto;
+        border-radius: $radius-md;
+        background-color: transparent;
+
+        transition:
+          background-color 0.2s ease,
+          box-shadow 0.2s ease;
+
+        &:hover {
+          background-color: rgba($color-primary, 0.5);
+          border-radius: $radius-circle;
+          box-shadow: $shadow-highlight-inset, $shadow-button;
+        }
+
+        &.is-selected {
+          border: 2px solid $color-primary;
+          background-color: rgba($color-primary, 0.12);
+        }
+      }
+
+      .outside-month {
+        color: $color-text-muted;
+        opacity: 0.5;
+      }
+    }
+
+
   }
 
   @media (max-width: $breakpoint-mobile) {
     min-height: 400px;
     padding: $spacing-xl $spacing-2xl;
     border-radius: $radius-2xl;
-  }
-}
-
-.calendar-placeholder {
-  min-height: 300px;
-  display: grid;
-  place-items: center;
-  border: 1px dashed $color-border;
-  border-radius: $radius-lg;
-  color: $color-text-muted;
-  text-align: center;
-
-  p {
-    padding: $spacing-lg;
   }
 }
 
@@ -218,6 +284,7 @@ button {
 // ========================================
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

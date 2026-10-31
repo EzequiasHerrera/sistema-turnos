@@ -1,14 +1,6 @@
+import Calendar from './components/Calendar.jsx';
 import { getCalendarDays } from './utils/calendarUtils'
 function App() {
-  const calendarDays = getCalendarDays(new Date(2026, 9, 1))
-
-  console.log(
-    calendarDays.map(({ date, isCurrentMonth }) => ({
-      day: date.getDate(),
-      month: date.getMonth() + 1,
-      isCurrentMonth,
-    })),
-  )
   return (
     <main className="app">
       <nav className="main-navigation" aria-label="Navegación principal">
@@ -25,15 +17,7 @@ function App() {
         </button>
       </nav>
 
-      <section className="calendar-panel" aria-label="Calendario mensual">
-        <header className="calendar-header">
-          <h1>Octubre 2026</h1>
-        </header>
-
-        <div className="calendar-placeholder">
-          <p>Acá construiremos el calendario</p>
-        </div>
-      </section>
+      <Calendar />
 
       <div className="calendar-actions">
         <button
