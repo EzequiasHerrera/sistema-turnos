@@ -11,8 +11,7 @@ const Calendar = () => {
     const formattedMonthTitle = monthTitle.charAt(0).toUpperCase() + monthTitle.slice(1);
 
     const isSameDate = (firstDate, secondDate) =>
-        firstDate?.getTime() === secondDate?.getTime()
-
+    firstDate?.toDateString() === secondDate?.toDateString();
 
     const changeMonth = (offset) => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1))
@@ -44,7 +43,13 @@ const Calendar = () => {
                                     setCurrentDate(day.date);
                                 };
                             }}
-                            type="button" className={`calendar-day ${!day.isCurrentMonth ? "outside-month" : ""} ${isSameDate(day.date, selectedDate) ? "is-selected" : ""}`}>
+                            type="button"
+                            className={
+                                `calendar-day
+                                ${!day.isCurrentMonth ? "outside-month" : ""}
+                                ${isSameDate(day.date, selectedDate) ? "is-selected" : ""}
+                                ${isSameDate(day.date, new Date()) ? "is-today" : ""}
+                                `}>
                             {day.date.getDate()}
                         </button>
                     ))}

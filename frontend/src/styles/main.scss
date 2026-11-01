@@ -175,6 +175,7 @@ button {
       gap: 3px;
 
       .calendar-day {
+        aspect-ratio: 1;
         border: 0;
         font-weight: 600;
         width: auto;
@@ -182,6 +183,7 @@ button {
         background-color: transparent;
 
         transition:
+          border-radius 0.2s ease,
           background-color 0.2s ease,
           box-shadow 0.2s ease;
 
@@ -193,7 +195,14 @@ button {
 
         &.is-selected {
           border: 2px solid $color-primary;
+          border-radius: $radius-circle;
           background-color: rgba($color-primary, 0.12);
+        }
+
+        &.is-today {
+          background-color: $color-primary;
+          border-radius: $radius-circle;
+          color: $color-surface;
         }
       }
 
