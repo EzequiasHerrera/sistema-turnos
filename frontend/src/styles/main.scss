@@ -3,6 +3,8 @@
 // ========================================
 // 1. ESTILOS GLOBALES
 // ========================================
+html {}
+
 :root {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
@@ -133,13 +135,17 @@ button {
 
     .calendar-month {
       margin: 0;
+      flex-shrink: 2;
       font-size: clamp(1.5rem, 5vw, 2rem);
       font-weight: 650;
       letter-spacing: -0.045em;
     }
 
     .calendar-navigation {
+      flex-shrink: 0;
+
       .month-nav-button {
+
         font-size: clamp(1.5rem, 5vw, 1rem);
         font-weight: 800;
         color: $color-primary;
@@ -151,6 +157,7 @@ button {
     flex: 1;
     display: flex;
     flex-direction: column;
+
     border: 1px dashed $color-border;
     border-radius: $radius-lg;
     color: $color-text-muted;
@@ -159,6 +166,7 @@ button {
     .calendar-weekdays {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
+
       text-align: center;
       color: $color-text-muted;
       font-size: 0.9rem;
@@ -168,6 +176,7 @@ button {
 
     .calendar-days {
       flex: 1;
+      align-items: center;
       min-height: 275px;
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -176,11 +185,14 @@ button {
 
       .calendar-day {
         aspect-ratio: 1;
+        align-items: center;
+        justify-items: center;
         border: 0;
         font-weight: 600;
         width: auto;
         border-radius: $radius-md;
         background-color: transparent;
+        font-size: clamp(0.85rem, 4vw, 1.2rem);
 
         transition:
           border-radius 0.2s ease,
@@ -260,18 +272,24 @@ button {
 // 6. CONTROL "HOY"
 // ========================================
 
-.today-handle {
-  align-self: stretch;
-  min-width: 132px;
-  min-height: 48px;
+.appointments-panel {
+  position: fixed;
+
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+  height: 88dvh;
+  z-index: 2;
+  
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-width: 132px;
+  min-height: 48px;
   gap: $spacing-xs;
   padding: $spacing-sm $spacing-xl;
   border: 1px solid $glass-border;
-  border-radius: $radius-pill;
+  border-radius: $radius-2xl $radius-2xl 0px 0px;
   background: $glass-background;
   color: $color-text;
   box-shadow:
@@ -279,14 +297,56 @@ button {
     inset 0 1px 0 $glass-highlight;
   backdrop-filter: blur($glass-blur);
   -webkit-backdrop-filter: blur($glass-blur);
+  transition: transform 0.5s ease;
+
+  &.half {
+    transform: translateY(30dvh);
+  }
+
+  &.closed {
+    transform: translateY(83dvh);
+  }
+
+  &.expanded {
+    transform: translateY(0);
+  }
+
+  .appointments-handle {
+    width: 100%;
+    height: 1rem;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+
+    .handle-indicator {
+      width: 60px;
+      height: 4px;
+      border-radius: $radius-pill;
+      background: #c9c9d6;
+    }
+  }
+
+  .appointments-content {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    flex: 1;
+    min-height: 0;
+  }
 }
 
-.handle-indicator {
-  width: 30px;
-  height: 4px;
-  border-radius: $radius-pill;
-  background: #c9c9d6;
+.backdrop {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur($glass-blur-soft);
+  -webkit-backdrop-filter: blur($glass-blur-soft);
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
+
+
 
 // ========================================
 // 7. ACCESIBILIDAD

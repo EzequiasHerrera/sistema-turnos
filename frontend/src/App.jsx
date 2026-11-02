@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import Calendar from './components/Calendar.jsx';
-import { getCalendarDays } from './utils/calendarUtils'
+import AppointmentPanel from './components/AppointmentPanel.jsx';
+
 function App() {
+  const [panelState, setPanelState] = useState("closed");
+
   return (
     <main className="app">
       <nav className="main-navigation" aria-label="Navegación principal">
@@ -29,10 +33,7 @@ function App() {
         </button>
       </div>
 
-      <button type="button" className="today-handle">
-        <span className="handle-indicator" aria-hidden="true" />
-        <span>Hoy</span>
-      </button>
+      <AppointmentPanel />
     </main>
   )
 }
