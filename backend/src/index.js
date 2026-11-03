@@ -1,9 +1,12 @@
 import dotenv from 'dotenv';
+import cors from 'cors';
 import express from 'express';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import clientRoutes from './routes/clientRoutes.js'
 
-const app  = express();
+const app = express();
+
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 app.use(express.json());
 
@@ -16,6 +19,6 @@ app.get('/', (req, res) => {
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/clients', clientRoutes);
 
-app.listen(PORT, ()=>{
-    console.log(`Server is running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
