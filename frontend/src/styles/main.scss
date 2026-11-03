@@ -183,6 +183,14 @@ button {
       grid-auto-rows: 1fr;
       gap: 3px;
 
+      .appointment-dot {
+        display: block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: currentColor;
+      }
+
       .calendar-day {
         aspect-ratio: 1;
         align-items: center;
@@ -280,7 +288,7 @@ button {
 
   height: 88dvh;
   z-index: 2;
-  
+
   bottom: 0;
   left: 0;
   right: 0;

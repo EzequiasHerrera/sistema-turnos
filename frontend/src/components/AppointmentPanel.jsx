@@ -1,7 +1,37 @@
 import { useState } from "react";
+import AppointmentItem from "./AppointmentItem.jsx";
 
-const AppointmentPanel = () => {
+const AppointmentPanel = ({ selectedDate, appointments, loading, error }) => {
+
     const [panelState, setPanelState] = useState("closed");
+
+    const renderAppointments = () => {
+        if (loading) {
+            return <p>Cargando turnos...</p>;
+        }
+
+        if (error) {
+            return <p>Error al cargar los turnos.</p>;
+        }
+
+        if (appointments.length === 0) {
+            return (
+                <p>
+                    {selectedDate
+                        ? "No hay turnos para esta fecha."
+                        : "No hay turnos registrados."}
+                </p>
+            );
+        }
+
+        return appointments.map((appointment) => (
+            <AppointmentItem
+                key={appointment.id}
+                appointment={appointment}
+            />
+        ));
+    };
+
 
     return (
         <>
@@ -18,8 +48,13 @@ const AppointmentPanel = () => {
                     <span className="handle-indicator" aria-hidden="true" />
                 </button>
 
+                <h1>{selectedDate
+                    ? selectedDate.toLocaleDateString("es-AR")
+                    : "Todos los turnos"}
+                </h1>
+
                 <div className="appointments-content">
-                    {/*Lista de turnos*/}
+                    {renderAppointments()}
                 </div>
 
             </section>
