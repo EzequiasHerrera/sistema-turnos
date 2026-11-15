@@ -61,6 +61,7 @@ function App() {
 
 			{isAppointmentModalOpen && (
 				<AppointmentModal
+					selectedDate={selectedDate}
 					onClose={() => setIsAppointmentModalOpen(false)}
 				/>
 			)}

@@ -1,13 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getClients } from "../services/clientsService.js";
+import { createAppointment } from "../services/appointmentService";
 
-const AppointmentModal = () => {
+const formatDateForInput = (date) => {
+	if (!date) return "";
+
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+
+	return `${year}-${month}-${day}`;
+};
+
+const AppointmentModal = ({ selectedDate }) => {
+	const [clients, setClients] = useState([]);
 	const [formData, setFormData] = useState({
 		client_id: "",
-		date: "",
+		date: formatDateForInput(selectedDate),
 		start_time: "",
 		end_time: "",
 		notes: "",
 	});
+
+	useEffect(() => {
+		const fetchClients = async () => {
+			try {
+				const data = await getClients();
+				setClients(data);
+				console.log("Clientes recibidos:", data);
+			} catch (error) {
+				console.error("Error al obtener clientes:", error);
+			}
+		};
+
+		fetchClients();
+	}, []);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -20,7 +47,16 @@ const AppointmentModal = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log("Datos del turno:", formData);
+
+		const appointmentData = {
+			client_id: Number(formData.client_id),
+			start_time: `${formData.date}T${formData.start_time}:00`,
+			end_time: `${formData.date}T${formData.end_time}:00`,
+			notes: formData.notes,
+		};
+
+		console.log("Turno preparado:", appointmentData);
+		createAppointment(appointmentData);
 	};
 
 	return (
@@ -33,7 +69,13 @@ const AppointmentModal = () => {
 				onChange={handleChange}
 			>
 				<option value="">Seleccionar cliente</option>
-				<option value="1">Nicole Apellido</option>
+				{clients
+					.filter((client) => client.is_active)
+					.map((client) => (
+						<option key={client.id} value={client.id}>
+							{client.name}
+						</option>
+					))}
 			</select>
 
 			<label htmlFor="date">Día de turno</label>
@@ -71,7 +113,7 @@ const AppointmentModal = () => {
 				onChange={handleChange}
 			/>
 
-            <button type="submit">Guardar turno</button>
+			<button type="submit">Guardar turno</button>
 		</form>
 	);
 };

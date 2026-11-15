@@ -1,13 +1,11 @@
+import { API_URL } from "../config/api.js";
+
 export const getClients = async () => {
-    const response = await fetch(
-        "https://sistema-turnos-seven.vercel.app/api/clients"
-    );
+    const response = await fetch(`${API_URL}/api/clients`);
 
     if (!response.ok) {
-        throw new Error("No se pudieron obtener los clientes");
+        throw new Error(`Error al obtener clientes: ${response.status}`);
     }
 
-    const clients = await response.json();
-
-    return clients;
+    return response.json();
 };
