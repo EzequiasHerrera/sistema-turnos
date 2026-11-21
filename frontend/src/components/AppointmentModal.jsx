@@ -12,7 +12,7 @@ const formatDateForInput = (date) => {
 	return `${year}-${month}-${day}`;
 };
 
-const AppointmentModal = ({ selectedDate }) => {
+const AppointmentModal = ({ selectedDate, onClose }) => {
 	const [clients, setClients] = useState([]);
 	const [formData, setFormData] = useState({
 		client_id: "",
@@ -48,6 +48,11 @@ const AppointmentModal = ({ selectedDate }) => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
+		if (formData.end_time <= formData.start_time) {
+			alert("La hora de finalización debe ser posterior a la de inicio.");
+			return;
+		}
+
 		const appointmentData = {
 			client_id: Number(formData.client_id),
 			start_time: `${formData.date}T${formData.start_time}:00`,
@@ -60,61 +65,100 @@ const AppointmentModal = ({ selectedDate }) => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<label htmlFor="client_id">Cliente</label>
-			<select
-				id="client_id"
-				name="client_id"
-				value={formData.client_id}
-				onChange={handleChange}
-			>
-				<option value="">Seleccionar cliente</option>
-				{clients
-					.filter((client) => client.is_active)
-					.map((client) => (
-						<option key={client.id} value={client.id}>
-							{client.name}
-						</option>
-					))}
-			</select>
+		<div
+			className="modal-overlay"
+			onClick={onClose}
+		>
+			<form
+				className="appointment-modal"
+				onSubmit={handleSubmit}
+				onClick={(e) => e.stopPropagation()}>
 
-			<label htmlFor="date">Día de turno</label>
-			<input
-				id="date"
-				type="date"
-				name="date"
-				value={formData.date}
-				onChange={handleChange}
-			/>
+				<header className="appointment-modal__header">
+					<h2>Nuevo turno</h2>
 
-			<label htmlFor="start_time">Hora de inicio</label>
-			<input
-				type="time"
-				id="start_time"
-				name="start_time"
-				value={formData.start_time}
-				onChange={handleChange}
-			/>
+					<button
+						type="button"
+						className="appointment-modal__close"
+						onClick={onClose}
+						aria-label="Cerrar formulario"
+					>
+						&times;
+					</button>
+				</header>
 
-			<label htmlFor="end_time">Hora de finalización</label>
-			<input
-				type="time"
-				id="end_time"
-				name="end_time"
-				value={formData.end_time}
-				onChange={handleChange}
-			/>
+				<div className="appointment-modal__field">
+					<label htmlFor="client_id">Cliente</label>
+					<select
+						id="client_id"
+						name="client_id"
+						value={formData.client_id}
+						onChange={handleChange}
+						required
+					>
+						<option value="">Seleccionar cliente</option>
+						{clients
+							.filter((client) => client.is_active)
+							.map((client) => (
+								<option key={client.id} value={client.id}>
+									{client.name}
+								</option>
+							))}
+					</select>
+				</div>
 
-			<label htmlFor="notes">Observación</label>
-			<textarea
-				id="notes"
-				name="notes"
-				value={formData.notes}
-				onChange={handleChange}
-			/>
+				<div className="appointment-modal__field">
+					<label htmlFor="date">Día de turno</label>
+					<input
+						id="date"
+						type="date"
+						name="date"
+						value={formData.date}
+						onChange={handleChange}
+						required
+					/>
+				</div>
 
-			<button type="submit">Guardar turno</button>
-		</form>
+				<div className="appointment-modal__hours">
+					<div className="appointment-modal__field">
+						<label htmlFor="start_time">Desde</label>
+						<input
+							type="time"
+							id="start_time"
+							name="start_time"
+							value={formData.start_time}
+							onChange={handleChange}
+							required
+						/>
+					</div>
+
+					<div className="appointment-modal__field">
+						<label htmlFor="end_time">Hasta</label>
+						<input
+							type="time"
+							id="end_time"
+							name="end_time"
+							value={formData.end_time}
+							onChange={handleChange}
+						/>
+					</div>
+				</div>
+
+				<div className="appointment-modal__field">
+					<label htmlFor="notes">Observación</label>
+					<textarea
+						id="notes"
+						name="notes"
+						value={formData.notes}
+						onChange={handleChange}
+					/>
+				</div>
+
+				<button className="appointment-modal__submit" type="submit">
+					Guardar turno
+				</button>
+			</form>
+		</div>
 	);
 };
 
