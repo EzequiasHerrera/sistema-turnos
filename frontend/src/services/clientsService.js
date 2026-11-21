@@ -9,3 +9,21 @@ export const getClients = async () => {
 
     return response.json();
 };
+
+export const createClients = async (clientData) => {
+    const response = await fetch(`${API_URL}/api/clients`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(clientData),
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("No se pudo crear el cliente");
+    }
+
+    return response.json();
+}

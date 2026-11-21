@@ -1,3 +1,4 @@
+//GET APPOINTMENT
 export const getAppointments = async () => {
 	const response = await fetch(
 		"https://sistema-turnos-seven.vercel.app/api/appointments/",
@@ -11,6 +12,7 @@ export const getAppointments = async () => {
 	return appointments;
 };
 
+//CREATE APPOINTMENT
 export const createAppointment = async (appointmentData) => {
 	const response = await fetch(
 		"https://sistema-turnos-seven.vercel.app/api/appointments",
@@ -28,4 +30,24 @@ export const createAppointment = async (appointmentData) => {
 	}
 
 	return response.json();
+};
+
+//UPDATE APPOINTMENT STATUS
+export const updateAppointmentStatus = async (id, status) => {
+    const response = await fetch(
+        `https://sistema-turnos-seven.vercel.app/api/appointments/${id}/status`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status }),
+        },
+    );
+
+    if (!response.ok) {
+        throw new Error("No se pudo actualizar el estado del turno");
+    }
+
+    return response.json();
 };

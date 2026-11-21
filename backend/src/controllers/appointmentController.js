@@ -117,7 +117,7 @@ export const createAppointment = async (req, res) => {
 
     res.status(201).json(appointmentResult.rows[0]);
   } catch (error) {
-    if(error.code === '23P01'){
+    if (error.code === '23P01') {
       res.status(409).json({
         error: 'El horario se superpone con otro turno existente'
       });
@@ -210,7 +210,7 @@ export const updateAppointment = async (req, res) => {
 
     res.json(result.rows[0]);
   } catch (error) {
-    if(error.code === '23P01'){
+    if (error.code === '23P01') {
       res.status(409).json({
         error: 'El horario se superpone con otro turno existente'
       });
@@ -221,7 +221,7 @@ export const updateAppointment = async (req, res) => {
     res.status(500).json({ error: 'Error al modificar turno' });
   }
 }
-//updateAppointmentStatus
+//UPDATE APPOINTMENT STATUS
 export const updateAppointmentStatus = async (req, res) => {
   const id = req.params.id;
   const { status } = req.body;
@@ -250,3 +250,32 @@ export const updateAppointmentStatus = async (req, res) => {
     res.status(500).json({ error: 'Error al modificar estado de turno' });
   }
 }
+//DELETE APPOINTMENT
+export const deleteAppointment = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM appointments
+             WHERE id = $1
+             RETURNING id`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: "Turno no encontrado"
+      });
+    }
+
+    res.status(200).json({
+      message: "Turno eliminado correctamente"
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Error al eliminar el turno"
+    });
+  }
+};

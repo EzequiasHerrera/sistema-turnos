@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getClients } from "../services/clientsService.js";
+import { getClients, createClients } from "../services/clientsService.js";
 import { createAppointment } from "../services/appointmentService";
 
 const formatDateForInput = (date) => {
@@ -12,8 +12,11 @@ const formatDateForInput = (date) => {
 	return `${year}-${month}-${day}`;
 };
 
-const AppointmentModal = ({ selectedDate, onClose }) => {
+const AppointmentModal = ({ selectedDate, onClose, onCreated }) => {
 	const [clients, setClients] = useState([]);
+	const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
+	const [isCreatingClient, setIsCreatingClient] = useState(false);
+	const [newClient, setNewClient] = useState({ name: "", phone: "", });
 	const [formData, setFormData] = useState({
 		client_id: "",
 		date: formatDateForInput(selectedDate),
@@ -45,7 +48,7 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 		}));
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		if (formData.end_time <= formData.start_time) {
@@ -60,14 +63,62 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 			notes: formData.notes,
 		};
 
-		console.log("Turno preparado:", appointmentData);
-		createAppointment(appointmentData);
+		try {
+			setIsWaitingForResponse(true);
+			await createAppointment(appointmentData);
+			onCreated();
+			console.log("Turno creado correctamente");
+		} catch (error) {
+			console.error("Error al crear el turno", error);
+		} finally {
+			setIsWaitingForResponse(false);
+		}
+
 	};
+
+	const handleClientChange = (e) => {
+		const { name, value } = e.target;
+
+		setNewClient((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
+
+	const handleCreateClient = async (e) => {
+		if (!newClient.name.trim() || !newClient.phone.trim()) {
+			alert("Nombre y teléfono son obligatorios.");
+			return;
+		}
+
+		try {
+			setIsWaitingForResponse(true);
+
+			const createdClient = await createClients(newClient);
+
+			setClients((prev) => [...prev, createdClient]);
+
+			setFormData((prev) => ({
+				...prev,
+				client_id: String(createdClient.id),
+			}));
+
+			setIsCreatingClient(false);
+			setNewClient({ name: "", phone: "" });
+		} catch (error) {
+			console.error("Error al crear el cliente:", error);
+		} finally {
+			setIsWaitingForResponse(false);
+		}
+
+	}
 
 	return (
 		<div
 			className="modal-overlay"
-			onClick={onClose}
+			onClick={() => {
+				if (!isWaitingForResponse) onClose();
+			}}
 		>
 			<form
 				className="appointment-modal"
@@ -82,6 +133,7 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 						className="appointment-modal__close"
 						onClick={onClose}
 						aria-label="Cerrar formulario"
+						disabled={isWaitingForResponse}
 					>
 						&times;
 					</button>
@@ -89,22 +141,66 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 
 				<div className="appointment-modal__field">
 					<label htmlFor="client_id">Cliente</label>
-					<select
-						id="client_id"
-						name="client_id"
-						value={formData.client_id}
-						onChange={handleChange}
-						required
-					>
-						<option value="">Seleccionar cliente</option>
-						{clients
-							.filter((client) => client.is_active)
-							.map((client) => (
-								<option key={client.id} value={client.id}>
-									{client.name}
-								</option>
-							))}
-					</select>
+
+					<div className="client_and_button">
+						<select
+							id="client_id"
+							name="client_id"
+							value={formData.client_id}
+							onChange={handleChange}
+							required
+							disabled={isWaitingForResponse}
+						>
+							<option value="">Seleccionar cliente</option>
+							{clients
+								.filter((client) => client.is_active)
+								.map((client) => (
+									<option key={client.id} value={client.id}>
+										{client.name}
+									</option>
+								))}
+						</select>
+						<button
+							className="appointment-modal__submit"
+							type="button"
+							onClick={() => setIsCreatingClient((prev) => !prev)}
+						>
+							{isCreatingClient ? "Cancelar" : "+"}
+						</button>
+					</div>
+
+					{isCreatingClient && (
+						<div className="appointment-modal__new-client">
+							<div className="appointment-modal__field">
+								<label htmlFor="client_name">Nombre</label>
+								<input
+									type="text"
+									id="client_name"
+									name="name"
+									value={newClient.name}
+									onChange={handleClientChange}
+								/>
+							</div>
+
+							<div className="appointment-modal__field">
+								<label htmlFor="client_phone">Teléfono</label>
+								<input
+									type="tel"
+									id="client_phone"
+									name="phone"
+									value={newClient.phone}
+									onChange={handleClientChange}
+								/>
+							</div>
+							<button
+								type="button"
+								className="appointment-modal__submit"
+								onClick={handleCreateClient}
+							>
+								Guardar cliente
+							</button>
+						</div>
+					)}
 				</div>
 
 				<div className="appointment-modal__field">
@@ -116,6 +212,7 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 						value={formData.date}
 						onChange={handleChange}
 						required
+						disabled={isWaitingForResponse}
 					/>
 				</div>
 
@@ -129,6 +226,7 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 							value={formData.start_time}
 							onChange={handleChange}
 							required
+							disabled={isWaitingForResponse}
 						/>
 					</div>
 
@@ -140,6 +238,8 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 							name="end_time"
 							value={formData.end_time}
 							onChange={handleChange}
+							required
+							disabled={isWaitingForResponse}
 						/>
 					</div>
 				</div>
@@ -151,11 +251,14 @@ const AppointmentModal = ({ selectedDate, onClose }) => {
 						name="notes"
 						value={formData.notes}
 						onChange={handleChange}
+						disabled={isWaitingForResponse}
 					/>
 				</div>
 
-				<button className="appointment-modal__submit" type="submit">
-					Guardar turno
+				<button className="appointment-modal__submit"
+					type="submit"
+					disabled={isWaitingForResponse}>
+					{isWaitingForResponse ? "Guardando..." : "Guardar turno"}
 				</button>
 			</form>
 		</div>

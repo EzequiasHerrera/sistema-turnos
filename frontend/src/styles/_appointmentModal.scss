@@ -1,0 +1,101 @@
+@use './variables' as *;
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.appointment-modal {
+    width: 100%;
+    max-width: 420px;
+    max-height: 90dvh;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: $radius-2xl;
+
+    .client_and_button {display: flex;}
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+
+        font-size: 1.5rem;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #f1f1f1;
+        }
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    &__hours {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: $spacing-md;
+    }
+
+    label {
+        font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 0.5rem;
+
+        &:focus {
+            outline: none;
+            border-color: $color-primary;
+            box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+        }
+    }
+
+
+    &__submit {
+        padding: $spacing-lg;
+        border-radius: $radius-md;
+        background: $color-primary;
+        color: $color-surface;
+        font-weight: 600;
+        box-shadow: $shadow-button-primary;
+
+        &:hover {
+            background: $color-primary-hover;
+        }
+    }
+}

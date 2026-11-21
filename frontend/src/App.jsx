@@ -12,22 +12,22 @@ function App() {
 
 	const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
 
+	const fetchAppointments = async () => {
+		try {
+			setError(false);
+			setLoading(true);
+
+			const appointments = await getAppointments();
+			setAppointments(appointments);
+		} catch (error) {
+			setError(true);
+			console.error("Error al obtener los turnos", error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
-		const fetchAppointments = async () => {
-			try {
-				setError(false);
-				setLoading(true);
-
-				const appointments = await getAppointments();
-				setAppointments(appointments);
-			} catch (error) {
-				setError(true);
-				console.error("Error al obtener los turnos", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
 		fetchAppointments();
 	}, []);
 
@@ -63,6 +63,10 @@ function App() {
 				<AppointmentModal
 					selectedDate={selectedDate}
 					onClose={() => setIsAppointmentModalOpen(false)}
+					onCreated={() => {
+						fetchAppointments();
+						setIsAppointmentModalOpen(false);
+					}}
 				/>
 			)}
 
@@ -70,6 +74,7 @@ function App() {
 				selectedDate={selectedDate}
 				setSelectedDate={setSelectedDate}
 				appointments={appointments}
+
 			/>
 
 			<div className="calendar-actions">
@@ -90,6 +95,7 @@ function App() {
 				appointments={dailyAppointments}
 				loading={loading}
 				error={error}
+				onStatusChanged={fetchAppointments}
 			/>
 		</main>
 	);
