@@ -49,6 +49,9 @@ const AppointmentItem = ({ appointment, onStatusChanged }) => {
                         onClick={handleDelete}>
                         Borrar
                     </button>
+                    <button type="button" className="appointment-menu-btn">
+                        ⋮
+                    </button>
                 </div>
 
                 <p className="appointment-item__name">
