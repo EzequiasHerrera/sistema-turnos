@@ -6,7 +6,12 @@ import clientRoutes from './routes/clientRoutes.js'
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://sistema-turnos-xlco.vercel.app"
+  ]
+}));
 
 app.use(express.json());
 
