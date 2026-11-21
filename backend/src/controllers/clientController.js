@@ -90,8 +90,8 @@ export const updateClient = async (req, res) => {
            RETURNING *
         `, [id, name.trim(), phone.trim()]);
 
-        if(result.rows.length === 0){
-            res.status(404).json({error: "ID de cliente no encontrado"})
+        if (result.rows.length === 0) {
+            res.status(404).json({ error: "ID de cliente no encontrado" })
             return;
         }
 
@@ -114,8 +114,8 @@ export const toggleClientStatus = async (req, res) => {
            RETURNING *
         `, [id]);
 
-        if(result.rows.length === 0){
-            res.status(404).json({error: "ID de cliente no encontrado"})
+        if (result.rows.length === 0) {
+            res.status(404).json({ error: "ID de cliente no encontrado" })
             return;
         }
 
@@ -126,6 +126,35 @@ export const toggleClientStatus = async (req, res) => {
         res.status(500).json({ error: 'Error al cambiar estado de cliente' })
     }
 }
+export const deleteClient = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query(
+            `DELETE FROM clients WHERE id = $1 RETURNING id`,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                error: "Cliente no encontrado"
+            });
+        }
+
+        res.json({ message: "Cliente eliminado correctamente" });
+    } catch (error) {
+        if (error.code === "23503") {
+            return res.status(409).json({
+                error: "No se puede eliminar un cliente que tiene turnos asociados"
+            });
+        }
+
+        console.error(error);
+        res.status(500).json({
+            error: "Error al eliminar el cliente"
+        });
+    }
+};
 
 const hasInvalidText = (...values) => {
     return values.some((value) => typeof value !== "string" || value.trim() === "");

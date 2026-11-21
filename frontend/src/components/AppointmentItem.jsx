@@ -36,6 +36,27 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment }) =>
         }
     };
 
+    const handleWhatsAppReminder = () => {
+        const phone = appointment.phone.replace(/\D/g, "");
+
+        const date = new Date(appointment.start_time);
+
+        const formattedDate = date.toLocaleDateString("es-AR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
+
+        const time = appointment.start_time.slice(11, 16);
+
+        const message = `¡Hola ${appointment.name}! Te recordamos que tenés un turno el día ${formattedDate} a las ${time} hs. ¡Te esperamos!`;
+
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+        window.open(url, "_blank", "noopener,noreferrer");
+        setIsMenuOpen(false);
+    };
+
     return (
         <div
             className={`appointment-item is-${appointment.status}`}
@@ -89,6 +110,13 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment }) =>
                                 Completar
                             </button>
                         )}
+
+                        <button
+                            type="button"
+                            onClick={handleWhatsAppReminder}
+                        >
+                            Enviar recordatorio
+                        </button>
 
                         {appointment.status !== "cancelled" && (
                             <button

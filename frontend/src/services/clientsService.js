@@ -27,3 +27,15 @@ export const createClients = async (clientData) => {
 
     return response.json();
 }
+
+export const deleteClient = async (id) => {
+    const response = await fetch(`${API_URL}/api/clients/${id}`, {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        throw new Error("No se pudo eliminar el cliente");
+    }
+
+    return response.json();
+};

@@ -1,0 +1,45 @@
+@use './variables' as *;
+
+.clients-page {
+    padding: $spacing-lg;
+
+    h1 {
+        margin-bottom: $spacing-lg;
+        color: $color-text;
+    }
+}
+
+.clients-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+}
+
+.client-item {
+    padding: $spacing-lg;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    box-shadow: $shadow-soft;
+
+    h2 {
+        margin: 0 0 $spacing-xs;
+        font-size: 1rem;
+        font-weight: 600;
+        color: $color-text;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: $color-text-muted;
+    }
+
+    span {
+        display: inline-block;
+        margin-top: $spacing-sm;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: $color-success;
+    }
+}
