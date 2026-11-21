@@ -82,6 +82,11 @@ button {
 }
 
 .nav-button {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   min-height: 44px;
   padding: 0 $spacing-xl;
   border: 1px solid rgba($color-border, 0.9);

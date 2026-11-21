@@ -1,36 +1,54 @@
 //GET APPOINTMENT
 export const getAppointments = async () => {
-	const response = await fetch(
-		"https://sistema-turnos-seven.vercel.app/api/appointments/",
-	);
+    const response = await fetch(
+        "https://sistema-turnos-seven.vercel.app/api/appointments/",
+    );
 
-	if (!response.ok) {
-		throw new Error("No se pudieron obtener los turnos");
-	}
+    if (!response.ok) {
+        throw new Error("No se pudieron obtener los turnos");
+    }
 
-	const appointments = await response.json();
-	return appointments;
+    const appointments = await response.json();
+    return appointments;
 };
 
 //CREATE APPOINTMENT
 export const createAppointment = async (appointmentData) => {
-	const response = await fetch(
-		"https://sistema-turnos-seven.vercel.app/api/appointments",
-		{
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(appointmentData),
-		},
-	);
+    const response = await fetch(
+        "https://sistema-turnos-seven.vercel.app/api/appointments",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(appointmentData),
+        },
+    );
 
-	if (!response.ok) {
-		throw new Error("No se pudo crear el turno");
-	}
+    if (!response.ok) {
+        throw new Error("No se pudo crear el turno");
+    }
 
-	return response.json();
+    return response.json();
 };
+
+//UPDATE FULL APPOINTMENT
+export const updateAppointment = async (id, appointmentData) => {
+    const response = await fetch( `https://sistema-turnos-seven.vercel.app/api/appointments/${id}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(appointmentData),
+        },
+    );
+    if (!response.ok) {
+        throw new Error("No se pudo actualizar el turno");
+    }
+
+    return response.json();
+}
 
 //UPDATE APPOINTMENT STATUS
 export const updateAppointmentStatus = async (id, status) => {

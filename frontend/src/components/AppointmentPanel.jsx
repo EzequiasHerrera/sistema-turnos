@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AppointmentItem from "./AppointmentItem.jsx";
 
-const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatusChanged }) => {
+const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatusChanged, onEditAppointment }) => {
 
     const [panelState, setPanelState] = useState("closed");
 
@@ -29,6 +29,7 @@ const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatus
                 key={appointment.id}
                 appointment={appointment}
                 onStatusChanged={onStatusChanged}
+                onEditAppointment={onEditAppointment}
             />
         ));
     };

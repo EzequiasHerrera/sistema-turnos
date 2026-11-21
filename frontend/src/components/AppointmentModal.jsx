@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getClients, createClients } from "../services/clientsService.js";
-import { createAppointment } from "../services/appointmentService";
+import { createAppointment, updateAppointment } from "../services/appointmentService";
 
 const formatDateForInput = (date) => {
 	if (!date) return "";
@@ -12,17 +12,25 @@ const formatDateForInput = (date) => {
 	return `${year}-${month}-${day}`;
 };
 
-const AppointmentModal = ({ selectedDate, onClose, onCreated }) => {
+const AppointmentModal = ({ selectedDate, appointment = null, onClose, onCreated }) => {
+	const isEditing = Boolean(appointment);
 	const [clients, setClients] = useState([]);
 	const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
+	const [editingAppointment, setEditingAppointment] = useState(null);
 	const [isCreatingClient, setIsCreatingClient] = useState(false);
 	const [newClient, setNewClient] = useState({ name: "", phone: "", });
 	const [formData, setFormData] = useState({
-		client_id: "",
-		date: formatDateForInput(selectedDate),
-		start_time: "",
-		end_time: "",
-		notes: "",
+		client_id: appointment ? String(appointment.client_id) : "",
+		date: appointment
+			? appointment.start_time.slice(0, 10)
+			: formatDateForInput(selectedDate),
+		start_time: appointment
+			? appointment.start_time.slice(11, 16)
+			: "",
+		end_time: appointment
+			? appointment.end_time.slice(11, 16)
+			: "",
+		notes: appointment?.notes ?? "",
 	});
 
 	useEffect(() => {
@@ -64,9 +72,12 @@ const AppointmentModal = ({ selectedDate, onClose, onCreated }) => {
 
 		try {
 			setIsWaitingForResponse(true);
-			await createAppointment(appointmentData);
+			if (isEditing) {
+				await updateAppointment(appointment.id, appointmentData);
+			} else {
+				await createAppointment(appointmentData);
+			}
 			onCreated();
-			console.log("Turno creado correctamente");
 		} catch (error) {
 			console.error("Error al crear el turno", error);
 		} finally {
@@ -125,7 +136,7 @@ const AppointmentModal = ({ selectedDate, onClose, onCreated }) => {
 				onClick={(e) => e.stopPropagation()}>
 
 				<header className="appointment-modal__header">
-					<h2>Nuevo turno</h2>
+					<h2>{isEditing ? "Editar turno" : "Nuevo turno"}</h2>
 
 					<button
 						type="button"

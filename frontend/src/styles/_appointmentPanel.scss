@@ -1,6 +1,38 @@
 @use './variables' as *;
 
+.appointment-menu {
+    position: relative;
+
+    &-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        z-index: 10;
+
+        display: flex;
+        flex-direction: column;
+
+        background: $color-surface;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        padding: 4px;
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+        }
+    }
+}
+
 .appointment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
     padding: $spacing-lg;
     margin-bottom: $spacing-md;
 
@@ -49,6 +81,9 @@
 
     &.is-cancelled {
         border-left-color: $color-text-muted;
-        opacity: 0.5;
+
+        .appointment-item__info {
+            opacity: 0.5;
+        }
     }
 }
