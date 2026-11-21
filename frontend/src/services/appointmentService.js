@@ -51,3 +51,19 @@ export const updateAppointmentStatus = async (id, status) => {
 
     return response.json();
 };
+
+//DELETE APPOINTMENT BY ID
+export const deleteAppointment = async (id) => {
+    const response = await fetch(
+        `https://sistema-turnos-seven.vercel.app/api/appointments/${id}`,
+        {
+            method: "DELETE",
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("No se pudo eliminar el turno");
+    }
+
+    return response.json();
+};

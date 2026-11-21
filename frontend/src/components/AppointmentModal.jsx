@@ -30,7 +30,6 @@ const AppointmentModal = ({ selectedDate, onClose, onCreated }) => {
 			try {
 				const data = await getClients();
 				setClients(data);
-				console.log("Clientes recibidos:", data);
 			} catch (error) {
 				console.error("Error al obtener clientes:", error);
 			}

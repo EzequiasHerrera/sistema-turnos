@@ -6,6 +6,7 @@ export const getAppointments = async (req, res) => {
     const result = await pool.query(`
       SELECT
         appointments.id,
+        appointments.client_id
         clients.name,
         clients.phone,
         appointments.start_time,
