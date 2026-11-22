@@ -1,10 +1,6 @@
-import { useState } from "react";
 import AppointmentItem from "./AppointmentItem.jsx";
 
-const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatusChanged, onEditAppointment }) => {
-
-    const [panelState, setPanelState] = useState("closed");
-
+const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatusChanged, panelState, setPanelState, onEditAppointment }) => {
     const renderAppointments = () => {
         if (loading) {
             return <p>Cargando turnos...</p>;

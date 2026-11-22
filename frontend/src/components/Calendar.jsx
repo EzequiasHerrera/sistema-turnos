@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { getCalendarDays } from "../utils/calendarUtils.js"
+import { isSameDate } from "../utils/dateUtils.js";
 
-const Calendar = ({ selectedDate, setSelectedDate, appointments }) => {
+const Calendar = ({ selectedDate, onSelectedDate, appointments, setEditingAppointment, setIsAppointmentModalOpen }) => {
     const [currentDate, setCurrentDate] = useState(() => new Date());
 
     const calendarDays = getCalendarDays(currentDate);
     const monthTitle = currentDate.toLocaleDateString("es-AR", { month: "long", year: "numeric" });
     const formattedMonthTitle = monthTitle.charAt(0).toUpperCase() + monthTitle.slice(1);
-
-    const isSameDate = (firstDate, secondDate) =>
-        firstDate?.toDateString() === secondDate?.toDateString();
 
     const hasAppointments = (date) => {
         return appointments.some((appointment) => {
@@ -43,12 +41,7 @@ const Calendar = ({ selectedDate, setSelectedDate, appointments }) => {
                     {calendarDays.map((day) => (
                         <button
                             key={day.date.toISOString()}
-                            onClick={() => {
-                                setSelectedDate(day.date);
-                                if (!day.isCurrentMonth) {
-                                    setCurrentDate(day.date);
-                                };
-                            }}
+                            onClick={() => onSelectedDate(day.date)}
                             type="button"
                             className={
                                 `calendar-day ${!day.isCurrentMonth ? "outside-month" : ""} ${isSameDate(day.date, selectedDate) ? "is-selected" : ""} ${isSameDate(day.date, new Date()) ? "is-today" : ""}
@@ -61,6 +54,19 @@ const Calendar = ({ selectedDate, setSelectedDate, appointments }) => {
                         </button>
                     ))}
                 </div>
+            </div>
+            <div className="calendar-actions">
+                <button
+                    type="button"
+                    className="add-appointment"
+                    aria-label="Agregar turno"
+                    onClick={() => {
+                        setEditingAppointment(null);
+                        setIsAppointmentModalOpen(true);
+                    }}
+                >
+                    +
+                </button>
             </div>
         </section>
     )

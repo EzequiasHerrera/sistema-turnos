@@ -3,6 +3,7 @@ import Calendar from "../components/Calendar.jsx";
 import AppointmentPanel from "../components/AppointmentPanel.jsx";
 import { getAppointments } from "../services/appointmentService.js";
 import AppointmentModal from "../components/AppointmentModal.jsx";
+import { isSameDate } from "../utils/dateUtils.js";
 
 const CalendarPage = () => {
 
@@ -12,7 +13,9 @@ const CalendarPage = () => {
     const [error, setError] = useState(false);
 
     const [editingAppointment, setEditingAppointment] = useState(null);
+
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+    const [panelState, setPanelState] = useState("closed");
 
     const fetchAppointments = async () => {
         try {
@@ -26,6 +29,14 @@ const CalendarPage = () => {
             console.error("Error al obtener los turnos", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleSetSelectedDate = (clickedDate) => {
+        if (isSameDate(clickedDate, selectedDate)) {
+            setPanelState("half");
+        } else {
+            setSelectedDate(clickedDate);
         }
     };
 
@@ -65,24 +76,11 @@ const CalendarPage = () => {
 
             <Calendar
                 selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
+                onSelectedDate={handleSetSelectedDate}
                 appointments={appointments}
-
+                setEditingAppointment={setEditingAppointment}
+                setIsAppointmentModalOpen={setIsAppointmentModalOpen}
             />
-
-            <div className="calendar-actions">
-                <button
-                    type="button"
-                    className="add-appointment"
-                    aria-label="Agregar turno"
-                    onClick={() => {
-                        setEditingAppointment(null);
-                        setIsAppointmentModalOpen(true);
-                    }}
-                >
-                    +
-                </button>
-            </div>
 
             <AppointmentPanel
                 selectedDate={selectedDate}
@@ -90,6 +88,8 @@ const CalendarPage = () => {
                 loading={loading}
                 error={error}
                 onStatusChanged={fetchAppointments}
+                panelState={panelState}
+                setPanelState={setPanelState}
                 onEditAppointment={(appointment) => {
                     setEditingAppointment(appointment);
                     setIsAppointmentModalOpen(true);

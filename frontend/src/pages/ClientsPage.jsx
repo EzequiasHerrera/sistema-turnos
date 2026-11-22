@@ -38,7 +38,20 @@ const ClientsPage = () => {
         fetchClients();
     }, []);
 
-    if (loading) return <p>Cargando clientes...</p>;
+    if (loading) return (
+        <section className="clients-page">
+            <h1>Clientes</h1>
+
+            <div className="clients-list">
+                <div className="client-item client-item--loading">
+                </div>
+                <div className="client-item client-item--loading">
+                </div>
+                <div className="client-item client-item--loading">
+                </div>
+            </div>
+        </section>
+    )
 
     if (error) return <p>Error al cargar los clientes.</p>;
 
