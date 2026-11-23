@@ -2,12 +2,15 @@
 import { useEffect, useState } from "react";
 import { deleteClient, getClients } from "../services/clientsService.js";
 import ClientModal from "../components/ClientModal.jsx";
+import ClientAppointmentsModal from "../components/ClientAppointmentsModal.jsx";
 
 const ClientsPage = () => {
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [isClientModalOpen, setIsClientModalOpen] = useState(false);
+
+    const [selectedClient, setSelectedClient] = useState(null);
 
     const handleDeleteClient = async (id) => {
         if (!window.confirm("¿Eliminar este cliente definitivamente?")) return;
@@ -67,6 +70,13 @@ const ClientsPage = () => {
             </section>)
             :
             (<section className="clients-page">
+                {selectedClient && (
+                    <ClientAppointmentsModal
+                        client={selectedClient}
+                        onClose={() => setSelectedClient(null)}
+                    />
+                )}
+
                 {isClientModalOpen && (
                     <ClientModal
                         onClose={() => setIsClientModalOpen(false)}
@@ -100,6 +110,12 @@ const ClientsPage = () => {
                                 <span>
                                     {client.is_active ? "Activo" : "Inactivo"}
                                 </span>
+                                <button type="button"
+                                    onClick={() => setSelectedClient(client)}
+                                >
+                                    Ver Turnos
+                                </button>
+
                                 <button
                                     type="button"
                                     onClick={() => handleDeleteClient(client.id)}
