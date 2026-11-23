@@ -13,6 +13,9 @@ export const getAppointments = async (req, res) => {
         appointments.end_time,
         appointments.status,
         appointments.notes,
+        appointments.expected_amount,
+        appointments.received_amount,
+        appointments.payment_method,
         clients.is_active
       FROM appointments
       JOIN clients
@@ -39,7 +42,10 @@ export const getAppointmentById = async (req, res) => {
         appointments.start_time,
         appointments.end_time,
         appointments.status,
-        appointments.notes
+        appointments.notes,
+        appointments.expected_amount,
+        appointments.received_amount,
+        appointments.payment_method
       FROM appointments
       JOIN clients
         ON appointments.client_id = clients.id
@@ -86,7 +92,13 @@ export const getAppointmentsByClientId = async (req, res) => {
 
 //CREATE APPOINTMENT
 export const createAppointment = async (req, res) => {
-  const { client_id, start_time, end_time, notes } = req.body;
+  const {
+    client_id,
+    start_time,
+    end_time,
+    notes,
+    expected_amount = 0
+  } = req.body;
 
   if (!client_id || !start_time || !end_time) {
     res.status(400).json({ error: "El ID de cliente, el horario de comienzo y final son obligatorios" })
@@ -95,6 +107,17 @@ export const createAppointment = async (req, res) => {
 
   const date_start_time = new Date(start_time);
   const date_end_time = new Date(end_time);
+
+  if (
+    expected_amount === null ||
+    expected_amount === "" ||
+    !Number.isFinite(Number(expected_amount)) ||
+    Number(expected_amount) < 0
+  ) {
+    return res.status(400).json({
+      error: "El importe esperado debe ser un número válido y no negativo"
+    });
+  }
 
   if (Number.isNaN(date_start_time.getTime()) || Number.isNaN(date_end_time.getTime())) {
     res.status(400).json({ error: "Los Horarios deben ser válidos" })
@@ -138,10 +161,22 @@ export const createAppointment = async (req, res) => {
     }
 
     const appointmentResult = await pool.query(`
-      INSERT INTO appointments (client_id, start_time, end_time, notes)
-      VALUES ($1, $2, $3, $4)
-      RETURNING *
-      `, [client_id, start_time, end_time, notes]);
+  INSERT INTO appointments (
+    client_id,
+    start_time,
+    end_time,
+    notes,
+    expected_amount
+  )
+  VALUES ($1, $2, $3, $4, $5)
+  RETURNING *
+`, [
+      client_id,
+      start_time,
+      end_time,
+      notes,
+      expected_amount
+    ]);
 
     res.status(201).json(appointmentResult.rows[0]);
   } catch (error) {
