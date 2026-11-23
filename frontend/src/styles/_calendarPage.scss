@@ -5,6 +5,7 @@
     flex-direction: column;
     flex: 1;
     min-height: min-content;
+    max-height: fit-content;
     padding: $spacing-4xl;
     border: 1px solid $glass-border;
     border-radius: $radius-4xl;
@@ -42,7 +43,7 @@
     }
 
     .calendar-placeholder {
-        flex: 1;
+        flex: initial;
         display: flex;
         flex-direction: column;
 
@@ -63,13 +64,14 @@
         }
 
         .calendar-days {
-            flex: 1;
-            align-items: center;
-            min-height: 275px;
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            grid-auto-rows: 1fr;
-            gap: 1px;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            grid-auto-rows: auto;
+            gap: 4px;
+
+            flex: initial;
+            min-height: 0;
+            align-items: center;
 
             .appointment-dot {
                 display: block;
@@ -124,7 +126,6 @@
     }
 
     @media (max-width: $breakpoint-mobile) {
-        max-height: 420px;
         padding: $spacing-xl $spacing-2xl;
         border-radius: $radius-2xl;
     }

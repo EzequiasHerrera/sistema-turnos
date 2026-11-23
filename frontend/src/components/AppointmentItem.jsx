@@ -5,8 +5,8 @@ import {
     deleteAppointment
 } from "../services/appointmentService.js";
 
-const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment }) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMenuOpen, setIsMenuOpen }) => {
+    
 
     const handleStatusChange = async (newStatus) => {
         try {

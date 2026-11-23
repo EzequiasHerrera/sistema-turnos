@@ -3,6 +3,13 @@
 .clients-page {
     padding: $spacing-lg;
 
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-items: center;
+        justify-content: space-between;
+    }
+
     h1 {
         margin-bottom: $spacing-lg;
         color: $color-text;

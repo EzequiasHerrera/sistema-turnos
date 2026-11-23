@@ -3,6 +3,7 @@ import CalendarPage from "./pages/CalendarPage.jsx";
 import ClientsPage from "./pages/ClientsPage.jsx";
 
 function App() {
+
 	return (
 		<main className="app">
 			<nav className="main-navigation" aria-label="Navegación principal">

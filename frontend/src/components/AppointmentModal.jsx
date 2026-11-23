@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getClients, createClients } from "../services/clientsService.js";
 import { createAppointment, updateAppointment } from "../services/appointmentService";
+import Modal from "./Modal.jsx";
 
 const formatDateForInput = (date) => {
 	if (!date) return "";
@@ -16,7 +17,6 @@ const AppointmentModal = ({ selectedDate, appointment = null, onClose, onCreated
 	const isEditing = Boolean(appointment);
 	const [clients, setClients] = useState([]);
 	const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
-	const [editingAppointment, setEditingAppointment] = useState(null);
 	const [isCreatingClient, setIsCreatingClient] = useState(false);
 	const [newClient, setNewClient] = useState({ name: "", phone: "", });
 	const [formData, setFormData] = useState({
@@ -124,30 +124,15 @@ const AppointmentModal = ({ selectedDate, appointment = null, onClose, onCreated
 	}
 
 	return (
-		<div
-			className="modal-overlay"
-			onClick={() => {
-				if (!isWaitingForResponse) onClose();
-			}}
+		<Modal
+			title={isEditing ? "Editar turno" : "Nuevo turno"}
+			onClose={onClose}
+			disabled={isWaitingForResponse}
 		>
 			<form
 				className="appointment-modal"
 				onSubmit={handleSubmit}
-				onClick={(e) => e.stopPropagation()}>
-
-				<header className="appointment-modal__header">
-					<h2>{isEditing ? "Editar turno" : "Nuevo turno"}</h2>
-
-					<button
-						type="button"
-						className="appointment-modal__close"
-						onClick={onClose}
-						aria-label="Cerrar formulario"
-						disabled={isWaitingForResponse}
-					>
-						&times;
-					</button>
-				</header>
+			>
 
 				<div className="appointment-modal__field">
 					<label htmlFor="client_id">Cliente</label>
@@ -271,7 +256,7 @@ const AppointmentModal = ({ selectedDate, appointment = null, onClose, onCreated
 					{isWaitingForResponse ? "Guardando..." : "Guardar turno"}
 				</button>
 			</form>
-		</div>
+		</Modal>
 	);
 };
 

@@ -33,7 +33,7 @@ const Calendar = ({ selectedDate, onSelectedDate, appointments, setEditingAppoin
 
             <div className="calendar-placeholder">
                 <div className="calendar-weekdays">
-                    {["LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"].map((weekDay) => (
+                    {["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"].map((weekDay) => (
                         <span key={weekDay}>{weekDay}</span>
                     ))}
                 </div>

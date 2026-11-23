@@ -1,8 +1,9 @@
 @use './variables' as *;
-@use './calendarPanel';
+@use './calendarPage';
 @use './appointmentModal';
 @use './appointmentPanel';
 @use './clientsPage';
+@use './modal';
 
 // ========================================
 // 1. ESTILOS GLOBALES

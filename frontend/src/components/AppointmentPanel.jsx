@@ -1,6 +1,9 @@
+import { useState } from "react";
 import AppointmentItem from "./AppointmentItem.jsx";
 
 const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatusChanged, panelState, setPanelState, onEditAppointment }) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const renderAppointments = () => {
         if (loading) {
             return <p>Cargando turnos...</p>;
@@ -26,6 +29,8 @@ const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatus
                 appointment={appointment}
                 onStatusChanged={onStatusChanged}
                 onEditAppointment={onEditAppointment}
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
             />
         ));
     };
@@ -60,7 +65,7 @@ const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatus
 
             {panelState !== "closed" && (
                 <span className="backdrop"
-                    onClick={() => setPanelState("closed")}
+                    onClick={() => { setPanelState("closed"); setIsMenuOpen(false); }}
                 ></span>
             )}
         </>

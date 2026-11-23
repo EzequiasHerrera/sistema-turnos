@@ -6,15 +6,12 @@ import AppointmentModal from "../components/AppointmentModal.jsx";
 import { isSameDate } from "../utils/dateUtils.js";
 
 const CalendarPage = () => {
-
+    const [editingAppointment, setEditingAppointment] = useState(null);
+    const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-
-    const [editingAppointment, setEditingAppointment] = useState(null);
-
-    const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
     const [panelState, setPanelState] = useState("closed");
 
     const fetchAppointments = async () => {
@@ -80,6 +77,7 @@ const CalendarPage = () => {
                 appointments={appointments}
                 setEditingAppointment={setEditingAppointment}
                 setIsAppointmentModalOpen={setIsAppointmentModalOpen}
+
             />
 
             <AppointmentPanel
