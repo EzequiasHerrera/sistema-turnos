@@ -57,6 +57,33 @@ export const getAppointmentById = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los turnos' });
   }
 }
+// GET ALL APPOINTMENTS BY CLIENT ID
+export const getAppointmentsByClientId = async (req, res) => {
+  const { client_id } = req.params;
+
+  try {
+    const result = await pool.query(`
+            SELECT
+                appointments.*,
+                clients.name,
+                clients.phone
+            FROM appointments
+            JOIN clients
+                ON appointments.client_id = clients.id
+            WHERE appointments.client_id = $1
+            ORDER BY appointments.start_time DESC
+        `, [client_id]);
+
+    res.json(result.rows);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Error al obtener los turnos del cliente"
+    });
+  }
+};
+
 //CREATE APPOINTMENT
 export const createAppointment = async (req, res) => {
   const { client_id, start_time, end_time, notes } = req.body;

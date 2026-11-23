@@ -1,29 +1,38 @@
-//GET APPOINTMENT
+import { API_URL } from "../config/api.js";
+
+// GET ALL APPOINTMENTS
 export const getAppointments = async () => {
-    const response = await fetch(
-        "https://sistema-turnos-seven.vercel.app/api/appointments/",
-    );
+    const response = await fetch(`${API_URL}appointments`);
 
     if (!response.ok) {
         throw new Error("No se pudieron obtener los turnos");
     }
 
-    const appointments = await response.json();
-    return appointments;
+    return response.json();
 };
 
-//CREATE APPOINTMENT
-export const createAppointment = async (appointmentData) => {
+// GET APPOINTMENTS BY CLIENT ID
+export const getAppointmentsByClientId = async (clientId) => {
     const response = await fetch(
-        "https://sistema-turnos-seven.vercel.app/api/appointments",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(appointmentData),
-        },
+        `${API_URL}appointments/client/${clientId}`
     );
+
+    if (!response.ok) {
+        throw new Error("No se pudieron obtener los turnos del cliente");
+    }
+
+    return response.json();
+};
+
+// CREATE APPOINTMENT
+export const createAppointment = async (appointmentData) => {
+    const response = await fetch(`${API_URL}appointments`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(appointmentData),
+    });
 
     if (!response.ok) {
         throw new Error("No se pudo crear el turno");
@@ -32,35 +41,34 @@ export const createAppointment = async (appointmentData) => {
     return response.json();
 };
 
-//UPDATE FULL APPOINTMENT
+// UPDATE FULL APPOINTMENT
 export const updateAppointment = async (id, appointmentData) => {
-    const response = await fetch( `https://sistema-turnos-seven.vercel.app/api/appointments/${id}`,
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(appointmentData),
+    const response = await fetch(`${API_URL}appointments/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
         },
-    );
+        body: JSON.stringify(appointmentData),
+    });
+
     if (!response.ok) {
         throw new Error("No se pudo actualizar el turno");
     }
 
     return response.json();
-}
+};
 
-//UPDATE APPOINTMENT STATUS
+// UPDATE APPOINTMENT STATUS
 export const updateAppointmentStatus = async (id, status) => {
     const response = await fetch(
-        `https://sistema-turnos-seven.vercel.app/api/appointments/${id}/status`,
+        `${API_URL}appointments/${id}/status`,
         {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ status }),
-        },
+        }
     );
 
     if (!response.ok) {
@@ -70,14 +78,11 @@ export const updateAppointmentStatus = async (id, status) => {
     return response.json();
 };
 
-//DELETE APPOINTMENT BY ID
+// DELETE APPOINTMENT BY ID
 export const deleteAppointment = async (id) => {
-    const response = await fetch(
-        `https://sistema-turnos-seven.vercel.app/api/appointments/${id}`,
-        {
-            method: "DELETE",
-        }
-    );
+    const response = await fetch(`${API_URL}appointments/${id}`, {
+        method: "DELETE",
+    });
 
     if (!response.ok) {
         throw new Error("No se pudo eliminar el turno");

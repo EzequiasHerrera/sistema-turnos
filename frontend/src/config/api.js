@@ -1,1 +1,1 @@
-export const API_URL = "https://sistema-turnos-seven.vercel.app";
+export const API_URL = "https://sistema-turnos-seven.vercel.app/api/";

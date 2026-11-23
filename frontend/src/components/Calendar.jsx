@@ -41,7 +41,17 @@ const Calendar = ({ selectedDate, onSelectedDate, appointments, setEditingAppoin
                     {calendarDays.map((day) => (
                         <button
                             key={day.date.toISOString()}
-                            onClick={() => onSelectedDate(day.date)}
+                            onClick={() => {
+                                if (!day.isCurrentMonth) {
+                                    setCurrentDate(new Date(
+                                        day.date.getFullYear(),
+                                        day.date.getMonth(),
+                                        1
+                                    ));
+                                }
+
+                                onSelectedDate(day.date);
+                            }}
                             type="button"
                             className={
                                 `calendar-day ${!day.isCurrentMonth ? "outside-month" : ""} ${isSameDate(day.date, selectedDate) ? "is-selected" : ""} ${isSameDate(day.date, new Date()) ? "is-today" : ""}
