@@ -1,12 +1,7 @@
-
-import { useState } from "react";
-import {
-    updateAppointmentStatus,
-    deleteAppointment
-} from "../services/appointmentService.js";
+import { deleteAppointment, updateAppointmentPayment, updateAppointmentStatus } from "../services/appointmentService.js";
+const formatoReales = new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" });
 
 const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMenuOpen, setIsMenuOpen }) => {
-    
 
     const handleStatusChange = async (newStatus) => {
         try {
@@ -36,6 +31,21 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
         }
     };
 
+    const handlePaymentComplete = async (appointmentData, method) => {
+        try {
+            await updateAppointmentPayment(appointmentData.id, {
+                received_amount: method === null ? 0 : appointmentData.expected_amount,
+                payment_method: method
+            });
+
+            setIsMenuOpen(false);
+            onStatusChanged();
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const handleWhatsAppReminder = () => {
         const phone = appointment.phone.replace(/\D/g, "");
 
@@ -58,91 +68,133 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
     };
 
     return (
-        <div
-            className={`appointment-item is-${appointment.status}`}
-        >
-            <div className="appointment-item__info">
-                <span className="appointment-item__time">
-                    {appointment.start_time.slice(11, 16)} - {appointment.end_time.slice(11, 16)}
-                </span>
+        <div className={`appointment-item is-${appointment.status}`}>
+            <div className="appointment-item__header">
+                <div className="appointment-item__info">
+                    <span className="appointment-item__time">
+                        {appointment.start_time.slice(11, 16)} - {appointment.end_time.slice(11, 16)}
+                    </span>
 
-                <p className="appointment-item__name">
-                    {appointment.name}
-                </p>
-
-                {appointment.notes && (
-                    <p className="appointment-item__notes">
-                        {appointment.notes}
+                    <p className="appointment-item__name">
+                        {appointment.name}
                     </p>
-                )}
+
+                    {appointment.notes && (
+                        <p className="appointment-item__notes">
+                            {appointment.notes}
+                        </p>
+                    )}
+                </div>
+
+                <div
+                    className="appointment-menu"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button
+                        type="button"
+                        className="appointment-menu-btn"
+                        aria-label="Opciones del turno"
+                        aria-expanded={isMenuOpen}
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    >
+                        ⋮
+                    </button>
+
+                    {isMenuOpen && (
+                        <div className="appointment-menu-dropdown">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsMenuOpen(false);
+                                    onEditAppointment(appointment);
+                                }}
+                            >
+                                Editar
+                            </button>
+                            {appointment.status !== "completed" && appointment.status !== "cancelled" && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleStatusChange("completed")}
+                                >
+                                    Completar
+                                </button>
+                            )}
+
+                            <button
+                                type="button"
+                                onClick={handleWhatsAppReminder}
+                            >
+                                Enviar recordatorio
+                            </button>
+
+                            {Number(appointment.received_amount) < Number(appointment.expected_amount) && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={() => handlePaymentComplete(appointment, "pix")}
+                                    >
+                                        Cobrar con PIX
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handlePaymentComplete(appointment, "cash")}
+                                    >
+                                        Cobrar con Efectivo
+                                    </button>
+                                </>
+                            )}
+
+                            {Number(appointment.received_amount) > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={() => handlePaymentComplete(appointment, null)}
+                                >
+                                    Revertir cobro
+                                </button>
+                            )}
+
+                            {appointment.status !== "cancelled" && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleStatusChange("cancelled")}
+                                >
+                                    Cancelar
+                                </button>
+                            )}
+
+                            {appointment.status !== "scheduled" && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleStatusChange("scheduled")}
+                                >
+                                    Marcar como pendiente
+                                </button>
+                            )}
+                            <button
+                                type="button"
+                                onClick={handleDelete}
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div
-                className="appointment-menu"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <button
-                    type="button"
-                    className="appointment-menu-btn"
-                    aria-label="Opciones del turno"
-                    aria-expanded={isMenuOpen}
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
-                    ⋮
-                </button>
+            <div className="appointment-item__payment">
+                <div className="appointment-item__amount">
+                    <span>Esperado</span>
+                    <strong>
+                        {formatoReales.format(appointment.expected_amount ?? 0)}
+                    </strong>
+                </div>
 
-                {isMenuOpen && (
-                    <div className="appointment-menu-dropdown">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setIsMenuOpen(false);
-                                onEditAppointment(appointment);
-                            }}
-                        >
-                            Editar
-                        </button>
-                        {appointment.status !== "completed" && appointment.status !== "cancelled" && (
-                            <button
-                                type="button"
-                                onClick={() => handleStatusChange("completed")}
-                            >
-                                Completar
-                            </button>
-                        )}
-
-                        <button
-                            type="button"
-                            onClick={handleWhatsAppReminder}
-                        >
-                            Enviar recordatorio
-                        </button>
-
-                        {appointment.status !== "cancelled" && (
-                            <button
-                                type="button"
-                                onClick={() => handleStatusChange("cancelled")}
-                            >
-                                Cancelar
-                            </button>
-                        )}
-
-                        {appointment.status !== "scheduled" && (
-                            <button
-                                type="button"
-                                onClick={() => handleStatusChange("scheduled")}
-                            >
-                                Marcar como pendiente
-                            </button>
-                        )}
-                        <button
-                            type="button"
-                            onClick={handleDelete}
-                        >
-                            Eliminar
-                        </button>
-                    </div>
-                )}
+                <div className="appointment-item__amount is-received">
+                    <span>Recibido</span>
+                    <strong>
+                        {formatoReales.format(appointment.received_amount ?? 0)}
+                    </strong>
+                </div>
             </div>
         </div>
     );

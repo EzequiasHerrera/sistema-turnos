@@ -31,6 +31,7 @@ const AppointmentModal = ({ selectedDate, appointment = null, onClose, onCreated
 			? appointment.end_time.slice(11, 16)
 			: "",
 		notes: appointment?.notes ?? "",
+		expected_amount: appointment?.expected_amount ?? 0,
 	});
 
 	useEffect(() => {
@@ -68,6 +69,7 @@ const AppointmentModal = ({ selectedDate, appointment = null, onClose, onCreated
 			start_time: `${formData.date}T${formData.start_time}:00`,
 			end_time: `${formData.date}T${formData.end_time}:00`,
 			notes: formData.notes,
+			expected_amount: Number(formData.expected_amount)
 		};
 
 		try {
@@ -245,6 +247,20 @@ const AppointmentModal = ({ selectedDate, appointment = null, onClose, onCreated
 						id="notes"
 						name="notes"
 						value={formData.notes}
+						onChange={handleChange}
+						disabled={isWaitingForResponse}
+					/>
+				</div>
+
+				<div className="appointment-modal__field">
+					<label htmlFor="expected_amount">Importe</label>
+					<input
+						id="expected_amount"
+						type="number"
+						min={0}
+						step={0.01}
+						name="expected_amount"
+						value={formData.expected_amount}
 						onChange={handleChange}
 						disabled={isWaitingForResponse}
 					/>

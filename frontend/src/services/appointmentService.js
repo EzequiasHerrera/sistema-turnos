@@ -58,6 +58,23 @@ export const updateAppointment = async (id, appointmentData) => {
     return response.json();
 };
 
+// UPDATE APPOINTMENT PAYMENT
+export const updateAppointmentPayment = async (id, appointmentPaymentData) => {
+    const response = await fetch(`${API_URL}appointments/${id}/payment`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(appointmentPaymentData)
+    });
+
+    if (!response.ok){
+        throw new Error("No se pudo actualizar el turno"); 
+    }
+
+    return response.json();
+}
+
 // UPDATE APPOINTMENT STATUS
 export const updateAppointmentStatus = async (id, status) => {
     const response = await fetch(

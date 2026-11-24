@@ -9,6 +9,7 @@ const ClientsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [isClientModalOpen, setIsClientModalOpen] = useState(false);
+    const [searchBarInput, setSearchBarInput] = useState("");
 
     const [selectedClient, setSelectedClient] = useState(null);
 
@@ -30,6 +31,7 @@ const ClientsPage = () => {
             setError(false);
 
             const data = await getClients();
+
             setClients(data);
         } catch (error) {
             console.error("Error al obtener clientes:", error);
@@ -87,6 +89,13 @@ const ClientsPage = () => {
                     />
                 )}
 
+                <input
+                    type="text"
+                    value={searchBarInput}
+                    onChange={(e) => setSearchBarInput(e.target.value)}
+                    placeholder="Buscar cliente..."
+                />
+
                 <div className="clients-page__header">
                     <h1>Clientes</h1>
                     <button
@@ -103,27 +112,30 @@ const ClientsPage = () => {
                     <p>No hay clientes registrados.</p>
                 ) : (
                     <div className="clients-list">
-                        {clients.map((client) => (
-                            <div className="client-item" key={client.id}>
-                                <h2>{client.name}</h2>
-                                <p>{client.phone}</p>
-                                <span>
-                                    {client.is_active ? "Activo" : "Inactivo"}
-                                </span>
-                                <button type="button"
-                                    onClick={() => setSelectedClient(client)}
-                                >
-                                    Ver Turnos
-                                </button>
+                        {[...clients]
+                            .filter((client) => client.name.toLowerCase().includes(searchBarInput.toLowerCase()) || client.phone.toLowerCase().includes(searchBarInput.toLowerCase()))
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((client) => (
+                                <div className="client-item" key={client.id}>
+                                    <h2>{client.name}</h2>
+                                    <p>{client.phone}</p>
+                                    <span>
+                                        {client.is_active ? "Activo" : "Inactivo"}
+                                    </span>
+                                    <button type="button"
+                                        onClick={() => setSelectedClient(client)}
+                                    >
+                                        Ver Turnos
+                                    </button>
 
-                                <button
-                                    type="button"
-                                    onClick={() => handleDeleteClient(client.id)}
-                                >
-                                    Eliminar
-                                </button>
-                            </div>
-                        ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleDeleteClient(client.id)}
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
+                            ))}
                     </div>
                 )}
             </section>)
