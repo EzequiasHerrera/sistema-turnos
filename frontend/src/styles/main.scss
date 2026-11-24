@@ -28,7 +28,7 @@ html {}
 
 body {
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   background: $color-background;
 }
@@ -41,7 +41,7 @@ textarea {
 }
 
 #root {
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 button {
@@ -62,7 +62,7 @@ button {
 .app {
   width: 100%;
   max-width: 760px;
-  min-height: 100vh;
+  min-height: 100dvh;
   margin-inline: auto;
   padding: $spacing-xl $spacing-lg $spacing-2xl;
   display: flex;
@@ -83,6 +83,9 @@ button {
   display: flex;
   align-items: center;
   gap: $spacing-sm;
+  width: 100%;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .nav-logo {
@@ -99,13 +102,18 @@ button {
   align-items: center;
   justify-content: center;
 
+  flex: 1;
+  min-width: 0;
   min-height: 44px;
-  padding: 0 $spacing-xl;
+  white-space: nowrap;
+
+  padding: 0 $spacing-lg;
   border: 1px solid rgba($color-border, 0.9);
   border-radius: $radius-pill;
   background: rgba($color-surface, 0.8);
   color: $color-text-muted;
   box-shadow: $shadow-button;
+
   transition:
     background 180ms ease,
     color 180ms ease,
@@ -123,7 +131,23 @@ button {
   }
 
   @media (max-width: $breakpoint-mobile) {
-    padding-inline: $spacing-lg;
+    padding-inline: 4px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .main-navigation {
+    gap: 4px;
+  }
+
+  .nav-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nav-button {
+    font-size: 0.75rem;
   }
 }
 

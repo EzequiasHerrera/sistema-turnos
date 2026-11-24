@@ -24,7 +24,9 @@ const Modal = ({ title, children, onClose, disabled = false }) => {
                     </button>
                 </header>
 
-                {children}
+                <div className="modal-body">
+                    {children}
+                </div>
             </div>
         </div>
     );

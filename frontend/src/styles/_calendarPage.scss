@@ -1,5 +1,21 @@
 @use './variables' as *;
 
+body.calendar-page-active {
+    overflow: hidden;
+    overscroll-behavior: none;
+
+    #root {
+        height: 100dvh;
+        overflow: hidden;
+    }
+
+    .app {
+        height: 100dvh;
+        min-height: 0;
+        overflow: hidden;
+    }
+}
+
 .calendar-panel {
     display: flex;
     flex-direction: column;

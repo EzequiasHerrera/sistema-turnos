@@ -41,6 +41,14 @@ const CalendarPage = () => {
         fetchAppointments();
     }, []);
 
+    useEffect(() => {
+        document.body.classList.add("calendar-page-active");
+
+        return () => {
+            document.body.classList.remove("calendar-page-active");
+        };
+    }, []);
+
     const dailyAppointments = appointments.filter((appointment) => {
         if (!selectedDate) return true;
 
