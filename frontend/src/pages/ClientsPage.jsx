@@ -8,10 +8,13 @@ const ClientsPage = () => {
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [isClientModalOpen, setIsClientModalOpen] = useState(false);
-    const [searchBarInput, setSearchBarInput] = useState("");
 
     const [selectedClient, setSelectedClient] = useState(null);
+
+    const [editingClient, setEditingClient] = useState(null);
+
+    const [searchBarInput, setSearchBarInput] = useState("");
+    const [isClientModalOpen, setIsClientModalOpen] = useState(false);
 
     const handleDeleteClient = async (id) => {
         if (!window.confirm("¿Eliminar este cliente definitivamente?")) return;
@@ -81,26 +84,33 @@ const ClientsPage = () => {
 
                 {isClientModalOpen && (
                     <ClientModal
-                        onClose={() => setIsClientModalOpen(false)}
+                        client={editingClient}
+                        onClose={() => {
+                            setIsClientModalOpen(false);
+                            setEditingClient(null);
+                        }}
                         onCreated={() => {
                             setIsClientModalOpen(false);
+                            setEditingClient(null);
                             fetchClients(false);
                         }}
                     />
                 )}
 
-                <input
-                    type="text"
-                    value={searchBarInput}
-                    onChange={(e) => setSearchBarInput(e.target.value)}
-                    placeholder="Buscar cliente..."
-                />
-
                 <div className="clients-page__header">
                     <h1>Clientes</h1>
+                </div>
+
+                <div className="clients-page__searchBar">
+                    <input
+                        type="text"
+                        value={searchBarInput}
+                        onChange={(e) => setSearchBarInput(e.target.value)}
+                        placeholder="Buscar cliente..."
+                    />
                     <button
                         type="button"
-                        className="add-appointment"
+                        className="create-client-button"
                         aria-label="Agregar cliente"
                         onClick={() => { setIsClientModalOpen(true); }}
                     >
@@ -117,23 +127,43 @@ const ClientsPage = () => {
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map((client) => (
                                 <div className="client-item" key={client.id}>
-                                    <h2>{client.name}</h2>
-                                    <p>{client.phone}</p>
-                                    <span>
-                                        {client.is_active ? "Activo" : "Inactivo"}
-                                    </span>
-                                    <button type="button"
-                                        onClick={() => setSelectedClient(client)}
-                                    >
-                                        Ver Turnos
-                                    </button>
+                                    <div className="client-item__header">
+                                        <div>
+                                            <h2>{client.name}</h2>
+                                            <p>{client.phone}</p>
+                                        </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => handleDeleteClient(client.id)}
-                                    >
-                                        Eliminar
-                                    </button>
+                                        <span className={client.is_active ? "active" : "inactive"}>
+                                            {client.is_active ? "Activo" : "Inactivo"}
+                                        </span>
+                                    </div>
+
+                                    <div className="client-item__actions">
+                                        <button
+                                            type="button"
+                                            onClick={() => setSelectedClient(client)}
+                                        >
+                                            Ver turnos
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditingClient(client);
+                                                setIsClientModalOpen(true);
+                                            }}
+                                        >
+                                            Editar
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="delete-button"
+                                            onClick={() => handleDeleteClient(client.id)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                     </div>

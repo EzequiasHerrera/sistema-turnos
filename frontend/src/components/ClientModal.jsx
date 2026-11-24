@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { createClients } from "../services/clientsService.js"
-import Modal from "./Modal.jsx"
+import { createClients, updateClient } from "../services/clientsService.js";
+import Modal from "./Modal.jsx";
 
-const ClientModal = ({ onClose, onCreated }) => {
+const ClientModal = ({ client = null, onClose, onCreated }) => {
+    const isEditing = Boolean(client);
+
     const [formData, setFormData] = useState({
-        name: "",
-        phone: "",
+        name: client?.name ?? "",
+        phone: client?.phone ?? "",
     });
 
     const [isSaving, setIsSaving] = useState(false);
@@ -30,11 +32,16 @@ const ClientModal = ({ onClose, onCreated }) => {
         try {
             setIsSaving(true);
 
-            await createClients(formData);
+            if (isEditing) {
+                await updateClient(client.id, formData);
+            } else {
+                await createClients(formData);
+            }
 
             onCreated();
         } catch (error) {
-            console.error("Error al crear el cliente:", error);
+            console.error("Error al guardar el cliente:", error);
+            alert("No se pudo guardar el cliente.");
         } finally {
             setIsSaving(false);
         }
@@ -42,11 +49,11 @@ const ClientModal = ({ onClose, onCreated }) => {
 
     return (
         <Modal
-            title="Crear cliente"
+            title={isEditing ? "Editar cliente" : "Crear cliente"}
             onClose={onClose}
             disabled={isSaving}
         >
-            <form onSubmit={handleSubmit}>
+            <form className="client-modal" onSubmit={handleSubmit}>
                 <div className="modal-field">
                     <label htmlFor="client_name">Nombre</label>
                     <input
@@ -78,11 +85,15 @@ const ClientModal = ({ onClose, onCreated }) => {
                     className="modal-submit"
                     disabled={isSaving}
                 >
-                    {isSaving ? "Guardando..." : "Guardar cliente"}
+                    {isSaving
+                        ? "Guardando..."
+                        : isEditing
+                            ? "Guardar cambios"
+                            : "Guardar cliente"}
                 </button>
             </form>
         </Modal>
-    )
-}
+    );
+};
 
-export default ClientModal
+export default ClientModal;

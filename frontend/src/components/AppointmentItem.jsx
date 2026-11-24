@@ -1,5 +1,5 @@
 import { deleteAppointment, updateAppointmentPayment, updateAppointmentStatus } from "../services/appointmentService.js";
-const formatoReales = new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" });
+import { formatoReales } from "../utils/currencyUtils.js";
 
 const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMenuOpen, setIsMenuOpen }) => {
 
@@ -127,6 +127,8 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                 Enviar recordatorio
                             </button>
 
+                            <hr />
+
                             {Number(appointment.received_amount) < Number(appointment.expected_amount) && (
                                 <>
                                     <button
@@ -153,6 +155,8 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                 </button>
                             )}
 
+                            <hr />
+
                             {appointment.status !== "cancelled" && (
                                 <button
                                     type="button"
@@ -171,6 +175,7 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                 </button>
                             )}
                             <button
+                                className="danger"
                                 type="button"
                                 onClick={handleDelete}
                             >

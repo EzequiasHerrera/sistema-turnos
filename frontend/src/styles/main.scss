@@ -1,10 +1,16 @@
 @use './variables' as *;
-@use './calendarPage';
-@use './appointmentModal';
-@use './appointmentPanel';
 @use './clientsPage';
-@use './clientAppointmentsModal';
+@use './calendarPage';
+@use './financesPage';
+
 @use './modal';
+
+@use './appointmentModal';
+@use './clientModal';
+
+@use './appointmentPanel';
+@use './clientAppointmentsModal';
+
 
 // ========================================
 // 1. ESTILOS GLOBALES
@@ -55,13 +61,20 @@ button {
   }
 }
 
+hr {
+  width: 90%;
+  border: none;
+  border-top: 1px solid $color-border;
+  margin: 0.2rem auto;
+}
+
 // ========================================
-// 2. ESTRUCTURA GENERAL
+// 2. ESTRUCTURA GENERAL DE LA APP
 // ========================================
 
 .app {
   width: 100%;
-  max-width: 760px;
+  max-width: 480px;
   min-height: 100dvh;
   margin-inline: auto;
   padding: $spacing-xl $spacing-lg $spacing-2xl;

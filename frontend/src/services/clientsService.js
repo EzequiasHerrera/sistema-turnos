@@ -40,3 +40,20 @@ export const deleteClient = async (id) => {
 
     return response.json();
 };
+
+// UPDATE CLIENT
+export const updateClient = async (id, clientData) => {
+    const response = await fetch(`${API_URL}clients/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(clientData),
+    });
+
+    if (!response.ok) {
+        throw new Error("No se pudo actualizar el cliente");
+    }
+
+    return response.json();
+};

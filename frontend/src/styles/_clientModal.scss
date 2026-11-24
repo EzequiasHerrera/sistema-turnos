@@ -1,0 +1,62 @@
+@use './variables' as *;
+
+.client-modal {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+
+    .modal-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        min-width: 0;
+
+        label {
+            font-weight: 500;
+            color: $color-text;
+        }
+
+        input {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            padding: 0.75rem;
+            border: 1px solid $color-border;
+            border-radius: $radius-md;
+            background: $color-surface;
+            color: $color-text;
+            font: inherit;
+
+            &:focus {
+                outline: none;
+                border-color: $color-primary;
+                box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+            }
+        }
+    }
+
+    .modal-submit {
+        width: 100%;
+        padding: $spacing-lg;
+        border: none;
+        border-radius: $radius-md;
+        background: $color-primary;
+        color: $color-surface;
+        font: inherit;
+        font-weight: 600;
+        box-shadow: $shadow-button-primary;
+        cursor: pointer;
+
+        &:hover {
+            background: $color-primary-hover;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    }
+}
