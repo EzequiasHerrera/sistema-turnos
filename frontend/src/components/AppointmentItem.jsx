@@ -1,7 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { deleteAppointment, updateAppointmentPayment, updateAppointmentStatus } from "../services/appointmentService.js";
 import { formatoReales } from "../utils/currencyUtils.js";
 
 const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMenuOpen, setIsMenuOpen }) => {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage === "pt-BR" ? "pt-BR" : "es-AR";
 
     const handleStatusChange = async (newStatus) => {
         try {
@@ -16,9 +19,7 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
     const handleDelete = async (e) => {
         e.stopPropagation();
 
-        const confirmed = window.confirm(
-            "¿Estás seguro de que querés eliminar este turno definitivamente?"
-        );
+        const confirmed = window.confirm(t("confirmDeleteAppointment"));
 
         if (!confirmed) return;
 
@@ -51,7 +52,7 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
 
         const date = new Date(appointment.start_time);
 
-        const formattedDate = date.toLocaleDateString("es-AR", {
+        const formattedDate = date.toLocaleDateString(locale, {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
@@ -59,7 +60,11 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
 
         const time = appointment.start_time.slice(11, 16);
 
-        const message = `¡Hola ${appointment.name}! Te recordamos que tenés un turno el día ${formattedDate} a las ${time} hs. ¡Te esperamos!`;
+        const message = t("whatsappReminder", {
+            name: appointment.name,
+            date: formattedDate,
+            time: time
+        });
 
         const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
@@ -93,7 +98,7 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                     <button
                         type="button"
                         className="appointment-menu-btn"
-                        aria-label="Opciones del turno"
+                        aria-label={t("appointmentOptions")}
                         aria-expanded={isMenuOpen}
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
@@ -109,14 +114,15 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                     onEditAppointment(appointment);
                                 }}
                             >
-                                Editar
+                                {t("edit")}
                             </button>
+
                             {appointment.status !== "completed" && appointment.status !== "cancelled" && (
                                 <button
                                     type="button"
                                     onClick={() => handleStatusChange("completed")}
                                 >
-                                    Completar
+                                    {t("complete")}
                                 </button>
                             )}
 
@@ -124,7 +130,7 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                 type="button"
                                 onClick={handleWhatsAppReminder}
                             >
-                                Enviar recordatorio
+                                {t("sendReminder")}
                             </button>
 
                             <hr />
@@ -135,13 +141,14 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                         type="button"
                                         onClick={() => handlePaymentComplete(appointment, "pix")}
                                     >
-                                        Cobrar con PIX
+                                        {t("chargePix")}
                                     </button>
+
                                     <button
                                         type="button"
                                         onClick={() => handlePaymentComplete(appointment, "cash")}
                                     >
-                                        Cobrar con Efectivo
+                                        {t("chargeCash")}
                                     </button>
                                 </>
                             )}
@@ -151,7 +158,7 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                     type="button"
                                     onClick={() => handlePaymentComplete(appointment, null)}
                                 >
-                                    Revertir cobro
+                                    {t("reversePayment")}
                                 </button>
                             )}
 
@@ -162,7 +169,7 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                     type="button"
                                     onClick={() => handleStatusChange("cancelled")}
                                 >
-                                    Cancelar
+                                    {t("cancel")}
                                 </button>
                             )}
 
@@ -171,15 +178,16 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
                                     type="button"
                                     onClick={() => handleStatusChange("scheduled")}
                                 >
-                                    Marcar como pendiente
+                                    {t("markAsPending")}
                                 </button>
                             )}
+
                             <button
                                 className="danger"
                                 type="button"
                                 onClick={handleDelete}
                             >
-                                Eliminar
+                                {t("delete")}
                             </button>
                         </div>
                     )}
@@ -188,14 +196,14 @@ const AppointmentItem = ({ appointment, onStatusChanged, onEditAppointment, isMe
 
             <div className="appointment-item__payment">
                 <div className="appointment-item__amount">
-                    <span>Esperado</span>
+                    <span>{t("expected")}</span>
                     <strong>
                         {formatoReales.format(appointment.expected_amount ?? 0)}
                     </strong>
                 </div>
 
                 <div className="appointment-item__amount is-received">
-                    <span>Recibido</span>
+                    <span>{t("received")}</span>
                     <strong>
                         {formatoReales.format(appointment.received_amount ?? 0)}
                     </strong>

@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { createClients, updateClient } from "../services/clientsService.js";
 import Modal from "./Modal.jsx";
 
 const ClientModal = ({ client = null, onClose, onCreated }) => {
+    const { t } = useTranslation();
+
     const isEditing = Boolean(client);
 
     const [formData, setFormData] = useState({
@@ -25,7 +28,7 @@ const ClientModal = ({ client = null, onClose, onCreated }) => {
         e.preventDefault();
 
         if (!formData.name.trim() || !formData.phone.trim()) {
-            alert("Nombre y teléfono son obligatorios.");
+            alert(t("requiredClientFields"));
             return;
         }
 
@@ -41,7 +44,7 @@ const ClientModal = ({ client = null, onClose, onCreated }) => {
             onCreated();
         } catch (error) {
             console.error("Error al guardar el cliente:", error);
-            alert("No se pudo guardar el cliente.");
+            alert(t("saveClientError"));
         } finally {
             setIsSaving(false);
         }
@@ -49,13 +52,14 @@ const ClientModal = ({ client = null, onClose, onCreated }) => {
 
     return (
         <Modal
-            title={isEditing ? "Editar cliente" : "Crear cliente"}
+            title={isEditing ? t("editClient") : t("createClient")}
             onClose={onClose}
             disabled={isSaving}
         >
             <form className="client-modal" onSubmit={handleSubmit}>
                 <div className="modal-field">
-                    <label htmlFor="client_name">Nombre</label>
+                    <label htmlFor="client_name">{t("name")}</label>
+
                     <input
                         id="client_name"
                         type="text"
@@ -68,7 +72,8 @@ const ClientModal = ({ client = null, onClose, onCreated }) => {
                 </div>
 
                 <div className="modal-field">
-                    <label htmlFor="client_phone">Teléfono</label>
+                    <label htmlFor="client_phone">{t("phone")}</label>
+
                     <input
                         id="client_phone"
                         type="tel"
@@ -86,10 +91,10 @@ const ClientModal = ({ client = null, onClose, onCreated }) => {
                     disabled={isSaving}
                 >
                     {isSaving
-                        ? "Guardando..."
+                        ? t("saving")
                         : isEditing
-                            ? "Guardar cambios"
-                            : "Guardar cliente"}
+                            ? t("saveChanges")
+                            : t("saveClient")}
                 </button>
             </form>
         </Modal>

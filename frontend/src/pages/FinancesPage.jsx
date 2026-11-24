@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getAppointments } from "../services/appointmentService.js";
 import { formatoReales } from "../utils/currencyUtils.js";
 import { isSameDate } from "../utils/dateUtils.js";
 
 const FinancesPage = () => {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage === "pt-BR" ? "pt-BR" : "es-AR";
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [appointments, setAppointments] = useState([]);
@@ -108,58 +112,72 @@ const FinancesPage = () => {
         .filter(appointment => Number(appointment.received_amount) > 0)
         .sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
 
+    const formatPercentage = (value) => {
+        return new Intl.NumberFormat(locale, {
+            style: "percent",
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1
+        }).format(value / 100);
+    };
+
     useEffect(() => {
         fetchAppointments();
-    }, [])
+    }, []);
 
     return (
         <section className="finances-page">
             <header className="finances-page__header">
-                <h1>Finanzas</h1>
+                <h1>{t("finances")}</h1>
 
                 <div className="finances-period">
                     <button
                         className={period === "day" ? "active" : ""}
                         onClick={() => setPeriod("day")}
-                    >Hoy</button>
+                    >
+                        {t("today")}
+                    </button>
 
                     <button
                         className={period === "week" ? "active" : ""}
                         onClick={() => setPeriod("week")}
-                    >Semana</button>
+                    >
+                        {t("week")}
+                    </button>
 
                     <button
                         className={period === "month" ? "active" : ""}
                         onClick={() => setPeriod("month")}
-                    >Mes</button>
+                    >
+                        {t("month")}
+                    </button>
                 </div>
             </header>
 
             {loading ? (
-                <p>Cargando finanzas...</p>
+                <p>{t("loadingFinances")}</p>
             ) : error ? (
-                <p>No se pudieron obtener los datos.</p>
+                <p>{t("financesError")}</p>
             ) : (
                 <>
                     <div className="finances-summary">
                         <article className="finance-card received">
-                            <span>Total recibido</span>
+                            <span>{t("totalReceived")}</span>
                             <strong>{formatoReales.format(totalReceived)}</strong>
                         </article>
 
                         <article className="finance-card">
-                            <span>Total esperado</span>
+                            <span>{t("totalExpected")}</span>
                             <strong>{formatoReales.format(totalExpected)}</strong>
                         </article>
 
                         <article className="finance-card pending">
-                            <span>Pendiente de cobro</span>
+                            <span>{t("pendingPayment")}</span>
                             <strong>{formatoReales.format(totalPending)}</strong>
                         </article>
                     </div>
 
                     <article className="finance-card">
-                        <h2>Métodos de pago</h2>
+                        <h2>{t("paymentMethods")}</h2>
 
                         <div className="payment-bar">
                             <div
@@ -176,46 +194,49 @@ const FinancesPage = () => {
                             <div>
                                 <span className="pix-label">PIX</span>
                                 <strong>{formatoReales.format(totalReceivedOnPix)}</strong>
-                                <small>{pixPercentage.toFixed(1)}%</small>
+                                <small>{formatPercentage(pixPercentage)}</small>
                             </div>
 
                             <div>
-                                <span className="cash-label">Efectivo</span>
+                                <span className="cash-label">{t("cash")}</span>
                                 <strong>{formatoReales.format(totalReceivedOnCash)}</strong>
-                                <small>{cashPercentage.toFixed(1)}%</small>
+                                <small>{formatPercentage(cashPercentage)}</small>
                             </div>
                         </div>
                     </article>
 
                     <article className="finance-card">
-                        <h2>Estadísticas de turnos</h2>
+                        <h2>{t("appointmentStatistics")}</h2>
 
                         <div className="finances-stats">
                             <div>
                                 <strong>{totalAppointments}</strong>
-                                <span>Totales</span>
+                                <span>{t("total")}</span>
                             </div>
+
                             <div>
                                 <strong>{completedAppointments}</strong>
-                                <span>Completados</span>
+                                <span>{t("completed")}</span>
                             </div>
+
                             <div>
                                 <strong>{scheduledAppointments}</strong>
-                                <span>Pendientes</span>
+                                <span>{t("pending")}</span>
                             </div>
+
                             <div>
                                 <strong>{cancelledAppointments}</strong>
-                                <span>Cancelados</span>
+                                <span>{t("cancelled")}</span>
                             </div>
                         </div>
                     </article>
 
                     <article className="finance-card">
-                        <h2>Detalle de cobros</h2>
+                        <h2>{t("paymentDetails")}</h2>
 
                         {paidAppointments.length === 0 ? (
                             <p className="finances-empty">
-                                No hay cobros en este período.
+                                {t("noPayments")}
                             </p>
                         ) : (
                             <div className="finances-history">
@@ -228,7 +249,7 @@ const FinancesPage = () => {
                                             <strong>{appointment.name}</strong>
                                             <small>
                                                 {new Date(appointment.start_time)
-                                                    .toLocaleDateString("es-AR")}
+                                                    .toLocaleDateString(locale)}
                                             </small>
                                         </div>
 
@@ -239,7 +260,7 @@ const FinancesPage = () => {
                                             <small>
                                                 {appointment.payment_method === "pix"
                                                     ? "PIX"
-                                                    : "Efectivo"}
+                                                    : t("cash")}
                                             </small>
                                         </div>
                                     </div>
@@ -251,6 +272,6 @@ const FinancesPage = () => {
             )}
         </section>
     );
-}
+};
 
-export default FinancesPage
+export default FinancesPage;

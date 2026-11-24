@@ -1,4 +1,8 @@
+import { useTranslation } from "react-i18next";
+
 const Modal = ({ title, children, onClose, disabled = false }) => {
+    const { t } = useTranslation();
+
     return (
         <div
             className="modal-overlay"
@@ -18,7 +22,7 @@ const Modal = ({ title, children, onClose, disabled = false }) => {
                         className="modal-close"
                         onClick={onClose}
                         disabled={disabled}
-                        aria-label="Cerrar modal"
+                        aria-label={t("closeModal")}
                     >
                         &times;
                     </button>

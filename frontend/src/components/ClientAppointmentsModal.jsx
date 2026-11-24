@@ -1,8 +1,12 @@
 import Modal from "./Modal.jsx";
 import { getAppointmentsByClientId } from "../services/appointmentService.js";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const ClientAppointmentsModal = ({ client, onClose }) => {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage === "pt-BR" ? "pt-BR" : "es-AR";
+
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
@@ -19,9 +23,12 @@ const ClientAppointmentsModal = ({ client, onClose }) => {
     }, [client.id]);
 
     return (
-        <Modal title={`Turnos de ${client.name}`} onClose={onClose}>
+        <Modal
+            title={t("clientAppointments", { name: client.name })}
+            onClose={onClose}
+        >
             {appointments.length === 0 ? (
-                <p>Este cliente no tiene turnos registrados.</p>
+                <p>{t("noClientAppointments")}</p>
             ) : (
                 <div className="client-appointments-list">
                     {appointments.map((appointment) => (
@@ -31,7 +38,7 @@ const ClientAppointmentsModal = ({ client, onClose }) => {
                         >
                             <div className="appointment-item__info">
                                 <span className="appointment-item__date">
-                                    {new Date(appointment.start_time).toLocaleDateString("es-AR", {
+                                    {new Date(appointment.start_time).toLocaleDateString(locale, {
                                         day: "2-digit",
                                         month: "long",
                                         year: "numeric",
@@ -50,20 +57,16 @@ const ClientAppointmentsModal = ({ client, onClose }) => {
                             </div>
 
                             <span className={`appointment-status is-${appointment.status}`}>
-                                {appointment.status === "scheduled"
-                                    ? "Pendiente"
-                                    : appointment.status === "completed"
-                                        ? "Completado"
-                                        : appointment.status === "cancelled"
-                                            ? "Cancelado"
-                                            : appointment.status}
+                                {t(`status.${appointment.status}`, {
+                                    defaultValue: appointment.status
+                                })}
                             </span>
                         </div>
                     ))}
                 </div>
             )}
         </Modal>
-    )
-}
+    );
+};
 
-export default ClientAppointmentsModal
+export default ClientAppointmentsModal;

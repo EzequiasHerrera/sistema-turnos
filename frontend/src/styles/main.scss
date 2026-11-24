@@ -169,7 +169,30 @@ hr {
 // ========================================
 
 
+.language-selector {
+  display: flex;
+  align-self: flex-end;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid $color-border;
+  border-radius: $radius-pill;
+  background: $color-surface;
 
+  button {
+    padding: 5px 12px;
+    border: none;
+    border-radius: $radius-pill;
+    background: transparent;
+    color: $color-text-muted;
+    font-size: 0.75rem;
+    cursor: pointer;
+
+    &.active {
+      background: $color-primary;
+      color: white;
+    }
+  }
+}
 
 // ========================================
 // 7. ACCESIBILIDAD

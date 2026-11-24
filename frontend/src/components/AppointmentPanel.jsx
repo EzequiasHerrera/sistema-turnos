@@ -1,26 +1,30 @@
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import AppointmentItem from "./AppointmentItem.jsx";
 
 const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatusChanged, panelState, setPanelState, onEditAppointment }) => {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage === "pt-BR" ? "pt-BR" : "es-AR";
+
     const [openMenuId, setOpenMenuId] = useState(null);
     const panelRef = useRef(null);
     const dragRef = useRef(null);
 
     const renderAppointments = () => {
         if (loading) {
-            return <p>Cargando turnos...</p>;
+            return <p>{t("loadingAppointments")}</p>;
         }
 
         if (error) {
-            return <p>Error al cargar los turnos.</p>;
+            return <p>{t("appointmentsError")}</p>;
         }
 
         if (appointments.length === 0) {
             return (
                 <p>
                     {selectedDate
-                        ? "No hay turnos para esta fecha."
-                        : "No hay turnos registrados."}
+                        ? t("noAppointmentsForDate")
+                        : t("noAppointments")}
                 </p>
             );
         }
@@ -100,7 +104,6 @@ const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatus
         }
 
         const finalPosition = drag.startPosition + distance;
-
         const states = ["expanded", "half", "closed"];
 
         const closestState = states.reduce((closest, state) => {
@@ -120,7 +123,6 @@ const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatus
                 ref={panelRef}
                 className={`appointments-panel ${panelState}`}
             >
-
                 <button
                     type="button"
                     className={`appointments-handle ${panelState}`}
@@ -132,28 +134,28 @@ const AppointmentPanel = ({ selectedDate, appointments, loading, error, onStatus
                     <span className="handle-indicator" aria-hidden="true" />
                 </button>
 
-                <h1>{selectedDate
-                    ? selectedDate.toLocaleDateString("es-AR")
-                    : "Todos los turnos"}
+                <h1>
+                    {selectedDate
+                        ? selectedDate.toLocaleDateString(locale)
+                        : t("allAppointments")}
                 </h1>
 
                 <div className="appointments-content">
                     {renderAppointments()}
                 </div>
-
             </section>
 
-
             {panelState !== "closed" && (
-                <span className="backdrop"
+                <span
+                    className="backdrop"
                     onClick={() => {
                         setPanelState("closed");
                         setOpenMenuId(null);
                     }}
-                ></span>
+                />
             )}
         </>
     );
-}
+};
 
-export default AppointmentPanel
+export default AppointmentPanel;

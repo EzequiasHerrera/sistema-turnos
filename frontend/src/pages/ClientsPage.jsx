@@ -1,30 +1,32 @@
-
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { deleteClient, getClients } from "../services/clientsService.js";
 import ClientModal from "../components/ClientModal.jsx";
 import ClientAppointmentsModal from "../components/ClientAppointmentsModal.jsx";
 
 const ClientsPage = () => {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage === "pt-BR" ? "pt-BR" : "es-AR";
+
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
     const [selectedClient, setSelectedClient] = useState(null);
-
     const [editingClient, setEditingClient] = useState(null);
 
     const [searchBarInput, setSearchBarInput] = useState("");
     const [isClientModalOpen, setIsClientModalOpen] = useState(false);
 
     const handleDeleteClient = async (id) => {
-        if (!window.confirm("¿Eliminar este cliente definitivamente?")) return;
+        if (!window.confirm(t("confirmDeleteClient"))) return;
 
         try {
             await deleteClient(id);
             setClients((prev) => prev.filter((client) => client.id !== id));
         } catch (error) {
             console.error(error);
-            alert("No se pudo eliminar el cliente. Puede tener turnos asociados.");
+            alert(t("deleteClientError"));
         }
     };
 
@@ -48,17 +50,18 @@ const ClientsPage = () => {
         fetchClients();
     }, []);
 
-    if (error) return <p>Error al cargar los clientes.</p>;
+    if (error) return <p>{t("clientsError")}</p>;
 
     return (
         loading ?
             (<section className="clients-page">
                 <div className="clients-page__header">
-                    <h1>Clientes</h1>
+                    <h1>{t("clients")}</h1>
                     <button
                         type="button"
                         className="add-appointment"
                         disabled={true}
+                        aria-label={t("addClient")}
                     >
                         +
                     </button>
@@ -98,7 +101,7 @@ const ClientsPage = () => {
                 )}
 
                 <div className="clients-page__header">
-                    <h1>Clientes</h1>
+                    <h1>{t("clients")}</h1>
                 </div>
 
                 <div className="clients-page__searchBar">
@@ -106,25 +109,29 @@ const ClientsPage = () => {
                         type="text"
                         value={searchBarInput}
                         onChange={(e) => setSearchBarInput(e.target.value)}
-                        placeholder="Buscar cliente..."
+                        placeholder={t("searchClient")}
                     />
+
                     <button
                         type="button"
                         className="create-client-button"
-                        aria-label="Agregar cliente"
-                        onClick={() => { setIsClientModalOpen(true); }}
+                        aria-label={t("addClient")}
+                        onClick={() => setIsClientModalOpen(true)}
                     >
                         +
                     </button>
                 </div>
 
                 {clients.length === 0 ? (
-                    <p>No hay clientes registrados.</p>
+                    <p>{t("noClients")}</p>
                 ) : (
                     <div className="clients-list">
                         {[...clients]
-                            .filter((client) => client.name.toLowerCase().includes(searchBarInput.toLowerCase()) || client.phone.toLowerCase().includes(searchBarInput.toLowerCase()))
-                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .filter((client) =>
+                                client.name.toLowerCase().includes(searchBarInput.toLowerCase()) ||
+                                client.phone.toLowerCase().includes(searchBarInput.toLowerCase())
+                            )
+                            .sort((a, b) => a.name.localeCompare(b.name, locale))
                             .map((client) => (
                                 <div className="client-item" key={client.id}>
                                     <div className="client-item__header">
@@ -134,7 +141,9 @@ const ClientsPage = () => {
                                         </div>
 
                                         <span className={client.is_active ? "active" : "inactive"}>
-                                            {client.is_active ? "Activo" : "Inactivo"}
+                                            {client.is_active
+                                                ? t("active")
+                                                : t("inactive")}
                                         </span>
                                     </div>
 
@@ -143,7 +152,7 @@ const ClientsPage = () => {
                                             type="button"
                                             onClick={() => setSelectedClient(client)}
                                         >
-                                            Ver turnos
+                                            {t("viewAppointments")}
                                         </button>
 
                                         <button
@@ -153,7 +162,7 @@ const ClientsPage = () => {
                                                 setIsClientModalOpen(true);
                                             }}
                                         >
-                                            Editar
+                                            {t("edit")}
                                         </button>
 
                                         <button
@@ -161,7 +170,7 @@ const ClientsPage = () => {
                                             className="delete-button"
                                             onClick={() => handleDeleteClient(client.id)}
                                         >
-                                            Eliminar
+                                            {t("delete")}
                                         </button>
                                     </div>
                                 </div>
